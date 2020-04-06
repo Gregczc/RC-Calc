@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+RC-Calc: An all-in-one R/C & FPV flying stuff calculator
+Copyright (C) 2020 Grégoire CAHUZAC <gregoire.cahuzac@outlook.fr>
+This file is part of RC-Calc. <https://github.com/Gregczc/RC-Calc>
+
+RC-Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or any later version.
+
+RC-Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>RC-Calc</title>
+
+    <link rel="manifest" href="/static/json/manifest.json">
+
+    <!-- Not sure if mandatory or if manifest.json is mis-configured -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/rc-calc-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/rc-calc-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/icons/rc-calc-48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/rc-calc-96.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="/static/icons/rc-calc-144.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/rc-calc-192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/static/icons/rc-calc-256.png">
+    <link rel="icon" type="image/png" sizes="384x384" href="/static/icons/rc-calc-384.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/rc-calc-512.png">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
+    <!-- Translation script -->
+    <script src="/static/js/translation.js"></script>
+
+    <!-- Include script -->
+    <script src="/static/js/include.js"></script>
+
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style4.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="/static/fontawesome-free/js/solid.js"></script>
+    <script defer src="/static/fontawesome-free/js/fontawesome.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <div data-include="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <!-- Navbar  -->
+            <div data-include="navbar"></div>
+
+            <h2>Motor</h2>
+            <p>Perhaps in future updates in order to help choose a motor according to aircraft weight, speed aimed, flight time
+            based on existing data.</p>
+
+            <div class="line"></div>
+
+        </div>
+    </div>
+
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+
+    <!-- Translation script -->
+    <script src="/static/js/translation.js"></script>
+
+    <!-- Include script -->
+    <script src="/static/js/include.js"></script>
+
+    <!-- Popper.JS -->
+    <script src="/static/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>

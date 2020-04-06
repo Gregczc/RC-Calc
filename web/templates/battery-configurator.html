@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+RC-Calc: An all-in-one R/C & FPV flying stuff calculator
+Copyright (C) 2020 Grégoire CAHUZAC <gregoire.cahuzac@outlook.fr>
+This file is part of RC-Calc. <https://github.com/Gregczc/RC-Calc>
+
+RC-Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or any later version.
+
+RC-Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>RC-Calc</title>
+
+    <meta property="og:title" content="RC-Calc"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="http://localhost:8888/"/>
+    <meta property="og:image" content="/static/icons/rc-calc-512.png"/>
+    <meta property="og:description" content="All the RC tools in one app!"/>
+
+    <link rel="manifest" href="/static/json/manifest.json">
+
+    <!-- Not sure if mandatory or if manifest.json is mis-configured -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/rc-calc-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/rc-calc-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/icons/rc-calc-48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/rc-calc-96.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="/static/icons/rc-calc-144.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/rc-calc-192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/static/icons/rc-calc-256.png">
+    <link rel="icon" type="image/png" sizes="384x384" href="/static/icons/rc-calc-384.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/rc-calc-512.png">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style4.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="/static/fontawesome-free/js/solid.js"></script>
+    <script defer src="/static/fontawesome-free/js/fontawesome.js"></script>
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <div data-include="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <!-- Navbar  -->
+            <div data-include="navbar"></div>
+
+            <h2>Battery Configurator</h2>
+            <p>This page will be used check the differences in performance about different packs.</p>
+
+            <div class="line"></div>
+
+        </div>
+    </div>
+
+    <!-- jQuery  -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+
+   <!-- Translation script -->
+    <script src="/static/js/translation.js"></script>
+
+    <!-- Include script -->
+    <script src="/static/js/include.js"></script>
+
+    <!-- Popper.JS -->
+    <script src="/static/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+
+
+</body>
+
+</html>

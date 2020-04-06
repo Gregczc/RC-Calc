@@ -1,0 +1,49 @@
+<!-- Navbar  -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-align-left"></i>
+                <span id="nav-toggle-sidebar">Toggle Sidebar</span>
+            </button>
+            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-align-justify"></i>
+            </button>
+        </div>
+
+
+        <ul class="nav navbar-nav navbar-right">
+
+            <li>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle text-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span id="nav-language">Language</span>
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" onclick="setLanguage('en')" href="#">English</a>
+                        <a class="dropdown-item" onclick="setLanguage('fr')" href="#">Français</a>
+                    </div>
+
+                </div>
+            </li>
+            <li>
+                <button class="btn btn-danger" type="button" onclick="window.location.replace('/exit');">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span id="nav-exit">Exit</span>
+                </button>
+            </li>
+
+
+        </ul>
+
+    </div>
+</nav>
+
+ <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+    </script>

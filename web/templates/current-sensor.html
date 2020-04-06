@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+RC-Calc: An all-in-one R/C & FPV flying stuff calculator
+Copyright (C) 2020 Grégoire CAHUZAC <gregoire.cahuzac@outlook.fr>
+This file is part of RC-Calc. <https://github.com/Gregczc/RC-Calc>
+
+RC-Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or any later version.
+
+RC-Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>RC-Calc</title>
+
+    <meta property="og:title" content="RC-Calc"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="http://localhost:8888/"/>
+    <meta property="og:image" content="/static/icons/rc-calc-512.png"/>
+    <meta property="og:description" content="All the RC tools in one app!"/>
+
+    <link rel="manifest" href="/static/json/manifest.json">
+
+    <!-- Not sure if mandatory or if manifest.json is mis-configured -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/rc-calc-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/rc-calc-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/icons/rc-calc-48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/rc-calc-96.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="/static/icons/rc-calc-144.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/rc-calc-192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/static/icons/rc-calc-256.png">
+    <link rel="icon" type="image/png" sizes="384x384" href="/static/icons/rc-calc-384.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/rc-calc-512.png">
+
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style4.css">
+
+    <link rel="stylesheet" href="/static/css/style_current_sensor.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="/static/fontawesome-free/js/solid.js"></script>
+    <script defer src="/static/fontawesome-free/js/fontawesome.js"></script>
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <div data-include="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <!-- Navbar  -->
+            <div data-include="navbar"></div>
+
+            <h2 id="current-sensor-title">Current Sensor</h2>
+            <p class="text-justify" id="current-sensor-description">This tool uses a simple cross product to determine the correct mV/A to enter in iNav/Betaflight in order to get a more accurate current measurement from the shunt resistor -or at least one that matches your charger.<br/>At the end of your flight, write down the mAh usage displayed on your OSD. Then, fully charge the battery with a charger that has a current-meter you trust. Write down the mAh it says it has put in the battery back. Then fill in this form:</p>
+
+            <div class="line"></div>
+
+            <form class="form-group row" method="POST" action="" novalidate>
+
+                <div class="form-group text-center col">
+                    <label for="formOSDmAh" id="current-sensor-OSD-mAh">OSD mAh</label>
+                    <div class="input-group">
+                        <input type="number" step="1" min="1" class="form-control" id="formOSDmAh" placeholder="eg. 5294" name="formOSDmAh" oninput="textChange(event);">
+                        <div class="input-group-append">
+                           <span class="input-group-text" id="current-sensor-OSD-mAh-unit">mAh</span>
+                        </div>
+                        <div class="invalid-tooltip" id="current-sensor-invtt-OSDmAh">"Please enter the mAh used seen by the OSD as a round number greater than 0."</div>
+                    </div>
+                </div>
+
+                <div class="form-group text-center col">
+                    <label for="formTrustedmAh" id="current-sensor-trusted-mAh">Trusted mAh</label>
+                    <div class="input-group">
+                        <input type="number" step="1" min="1" class="form-control" id="formTrustedmAh" placeholder="eg. 4953" name="formTrustedmAh" oninput="textChange(event);">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="current-sensor-trusted-mAh-unit">mAh</span>
+                        </div>
+                        <div class="invalid-tooltip" id="current-sensor-invtt-trustedmAh">Please enter the trusted mAh amount as a round number greater than 0.</div>
+                        </div>
+                </div>
+
+                <div class="form-group text-center col">
+                    <label for="formOldmVA" id="current-sensor-current-mVA">Current mV/A</label>
+                    <div class="input-group">
+                        <input type="number" step="1" min="1" class="form-control" id="formOldmVA" placeholder="eg. 400" name="formOldmVA" oninput="textChange(event);">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="current-sensor-current-mVA-unit">1/10<sup>th</sup> mV/A</span>
+                        </div>
+                        <div class="invalid-tooltip" id="current-sensor-invtt-currentmVA">Please enter the current mV/A used by iNav as a round number greater than 0.</div>
+                    </div>
+                </div>
+
+                <div class="form-group text-center col">
+                    <label for="formNewmVA" id="current-sensor-new-mVA">New mV/A</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="formNewmVA" placeholder="Waiting for input" readonly name="formNewmVA">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="current-sensor-new-mVA-unit">1/10<sup>th</sup> mV/A</span>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- jQuery  -->
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+
+   <!-- Translation script -->
+    <script src="/static/js/translation.js"></script>
+
+    <!-- Include script -->
+    <script src="/static/js/include.js"></script>
+
+    <!-- Popper.JS -->
+    <script src="/static/js/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="/static/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function textChange(event) {
+
+            if(event.target.value && event.target.value > 0) {
+                document.getElementById(event.target.id).classList.remove('is-invalid');
+                document.getElementById(event.target.id).classList.add('is-valid');
+            }
+
+            else {
+                document.getElementById(event.target.id).classList.remove('is-valid');
+                document.getElementById(event.target.id).classList.add('is-invalid');
+            }
+
+            var osdmAh = document.getElementById("formOSDmAh").value;
+            var trustedmAh = document.getElementById("formTrustedmAh").value;
+            var oldmVA = document.getElementById("formOldmVA").value;
+
+            if (osdmAh && osdmAh > 0 && trustedmAh && trustedmAh > 0 && oldmVA && oldmVA > 0) {
+                document.getElementById("formNewmVA").value = Math.round(osdmAh / trustedmAh * oldmVA);
+            }
+
+            else {
+                document.getElementById("formNewmVA").value = getString("formNewmVA");
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
