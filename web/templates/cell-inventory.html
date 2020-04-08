@@ -49,8 +49,13 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap.css">
 
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="/static/bootstrap-table/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.css">
+
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="/static/css/style_main.css">
+    <link rel="stylesheet" href="/static/css/style_cell_inventory.css">
 
     <!-- Font Awesome JS -->
     <script defer src="/static/fontawesome-free/js/all.js"></script>
@@ -60,7 +65,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 <body>
 
     <div class="wrapper">
-        <!-- Sidebar  -->
+
         <div data-include="sidebar"></div>
 
         <!-- Page Content  -->
@@ -74,8 +79,31 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
             <div class="line"></div>
 
+            <table id="table-cells"></table>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this cell?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger">Delete cell</button>
+            </div>
+        </div>
+    </div>
+
+</div>
 
     <!-- jQuery  -->
     <script src="/static/js/jquery-3.4.1.js"></script>
@@ -88,6 +116,54 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
     <!-- Popper and Bootstrap script bundle -->
     <script src="/static/js/bootstrap.bundle.js"></script>
+
+    <!-- Bootstrap Table -->
+    <script src="/static/bootstrap-table/bootstrap-table.js"></script>
+    <script src="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.js"></script>
+    <script>
+        $('#table-cells').bootstrapTable({
+        classes: 'table table-hover',
+        stickyHeader: true,
+        stickyHeaderOffsetLeft: '3em',
+        stickyHeaderOffsetRight: '3em',
+        url: '/static/json/cells.json',
+        columns: [{
+                field: '#',
+                title: '#'
+            }, {
+                field: 'Name',
+                title: 'Name'
+            }, {
+                field: 'Voltage',
+                title: 'Voltage'
+            }, {
+                field: 'Energy',
+                title: 'Energy'
+            }, {
+                field: 'Capacity',
+                title: 'Capacity'
+            }, {
+                field: 'Max Power',
+                title: 'Max Power'
+            }, {
+                field: 'Max Current',
+                title: 'Max Current'
+            }, {
+                field: 'Weight',
+                title: 'Weight'
+            }, {
+                field: 'Price',
+                title: 'Price'
+            }, {
+                field: 'Data-sheet',
+                title: 'Data-sheet'
+            }, {
+                field: 'Manage',
+                title: 'Manage'
+            }]
+        })
+    </script>
+
 
 
 </body>
