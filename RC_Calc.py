@@ -29,7 +29,7 @@ from web.flying_wing_design import flying_wing_design
 from web.index import index
 from web.motor import motor
 
-app = Flask(__name__, static_folder="./web/static/", template_folder="./web/templates")
+app = Flask(__name__, static_folder="web/static", template_folder="web/templates", static_url_path='/static/')
 
 app.register_blueprint(battery_configurator, url_prefix='/battery-configurator')
 app.register_blueprint(cell_inventory, url_prefix='/cell-inventory')
