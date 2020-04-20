@@ -1,0 +1,42 @@
+[
+  {
+    "Name": "NCR18650GA",
+    "Voltage": "3.6",
+    "Energy": "11.90",
+    "Capacity": "3.3",
+    "Max Current": "10",
+    "Weight": "48",
+    "Price": "4.25€",
+    "Data-sheet": true
+  },
+  {
+    "Name": "NCR20700B",
+    "Voltage": "3.6",
+    "Energy": "15.30",
+    "Capacity": "4.3",
+    "Max Current": "15",
+    "Weight": "63",
+    "Price": "4.75€",
+    "Data-sheet": true
+  },
+  {
+    "Name": "NCR2070C",
+    "Voltage": "3.6",
+    "Energy": "12.60",
+    "Capacity": "3.5",
+    "Max Current": "30",
+    "Weight": "60",
+    "Price": "5.45€",
+    "Data-sheet": true
+  },
+  {
+    "Name": "Lipo 3S Hobbyking",
+    "Voltage": "11.1",
+    "Energy": "24.42",
+    "Capacity": "2.2",
+    "Max Current": "55",
+    "Weight": "188",
+    "Price": "9.77€",
+    "Data-sheet": false
+  }
+]
