@@ -17,14 +17,36 @@
     along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#addButton > span {
+    margin-left: 0.5rem;
+}
+
+#addButton {
+    float: right;
+    margin-right: 0rem;
+    margin-bottom: 1rem;
+}
+
 table {
     text-align: center;
 }
 
-td > button {
+td > .hover-only {
     visibility: hidden !important;
+}
+
+td > button {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 0.01rem;
 }
 
 tr:hover > td > button {
     visibility: visible !important;
+}
+
+.no-spin {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+    -moz-appearance:textfield !important;
 }

@@ -44,5 +44,5 @@ if __name__ == '__main__':
 
     webbrowser.open('http://localhost:8888/', new=2)
     print(app.url_map)
-    app.run(port=8888)
+    app.run(port=8888, debug=False)
     print("Server shutdown. Bye!")

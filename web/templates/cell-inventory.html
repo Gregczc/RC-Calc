@@ -73,37 +73,263 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
             <!-- Navbar  -->
             <div data-include="navbar"></div>
+			
+            <div id="alertAjaxError" class="alert alert-danger fade show" role="alert" style="display:none;">
+                <strong>Error!</strong> The server did not respond properly, please check the console for more information.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div id="alertAlreadyExisting" class="alert alert-danger fade show" role="alert" style="display:none;">
+                <strong>Error!</strong> A cell was already existing with the same name and was not added.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div id="alertDatasheet" class="alert alert-danger fade show" role="alert" style="display:none;">
+                <strong>Error!</strong> An error occurred with the datasheet thus was not added with the cell. Please check the console for more information.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)" style="display:none;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div id="alertSuccessAdded" class="alert alert-success fade show collapse" role="alert" style="display:none;">
+                <strong>Success!</strong> The cell was correctly added.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+			
+			<div id="alertSuccessDeleted" class="alert alert-success fade show collapse" role="alert" style="display:none;">
+                <strong>Success!</strong> The cell was correctly deleted.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+			
+			<div id="alertErrorDeleted" class="alert alert-danger fade show collapse" role="alert" style="display:none;">
+                <strong>Error!</strong> The cell could not be deleted. Please check the console for more infos.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+			
+			<div id="alertSuccessUpdated" class="alert alert-success fade show collapse" role="alert" style="display:none;">
+                <strong>Success!</strong> The cell was correctly updated.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+			
+			<div id="alertErrorUpdated" class="alert alert-danger fade show collapse" role="alert" style="display:none;">
+                <strong>Error!</strong> The cell could not be updated. Please check the console for more infos.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
 
             <h2>Cell Inventory</h2>
-            <p>This page will be used to store data about the different cells to be used in the battery configurator.</p>
+            <p>This page shows the different cells available to build a pack in the <a href="/battery-configurator/">battery configurator page</a>.</p>
 
             <div class="line"></div>
 
+            <button id="addButton" type="button" class="btn btn-outline-primary" onclick="add_cell()">
+                <i class="fas fa-plus"></i><span>Add a cell</span>
+            </button>
             <table id="table-cells"></table>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <!-- Modal confirm Delete-->
+    <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteTitle">Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the cell <b><span id="cellToDelete"></span></b>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_confirm()">Delete cell</button>
+                </div>
             </div>
-            <div class="modal-body">
-                Are you sure you want to delete this cell?
+        </div>
+    </div>
+	
+	<!-- Modal confirm Datasheet Delete-->
+    <div class="modal fade" id="modalConfirmDatasheetDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDatasheetDeleteTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDatasheetDeleteTitle">Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the associated datasheet ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cancel_delete_datasheet()">No, I changed my mind</button>
+                    <button type="button" class="btn btn-danger" onclick="delete_datasheet()">Yes, I am sure</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger">Delete cell</button>
+        </div>
+    </div>
+	
+	<!-- Modal choose Datasheet-->
+    <div class="modal fade" id="modalChooseDatasheet" tabindex="-1" role="dialog" aria-labelledby="chooseDatasheetTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chooseDatasheetTitle">Choose datasheet</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+				<form id="formChooseDatasheet">
+					<div class="modal-body">
+						Please select a new datasheet for this cell :
+						<input type="file" class="form-control-file" id="inputAddDatasheet" accept=".pdf" name="Data-sheet" required>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" onclick="cancel_choose_datasheet()">Cancel</button>
+						<button type="submit" class="btn btn-primary">Add datasheet</button>
+					</div>
+				</form>
             </div>
         </div>
     </div>
 
-</div>
+    <!-- Modal still Editing-->
+    <div class="modal fade" id="modalStillEditing" tabindex="-1" role="dialog" aria-labelledby="stillEditingTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stillEditingTitle">Still Editing!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please finish editing the current row before editing another one.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add Cell -->
+    <div class="modal fade" id="modalAddCell" tabindex="-1" role="dialog" aria-labelledby="addCellTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCellTitle">Add a new cell</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formAdd" method="POST" enctype="multipart/form-data">
+                    <input name="Type" type="hidden" value="add">
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-3 col-form-label">Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="inputName" placeholder="Cell name" required name="Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputVoltage" class="col-sm-3 col-form-label">Voltage</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" step="0.1" min="0.1" class="form-control" id="inputVoltage" placeholder="3.6" required name="Voltage">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">V</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputEnergy" class="col-sm-3 col-form-label">Energy</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" step="0.01" min="0.01" class="form-control" id="inputEnergy" placeholder="15.30" required name="Energy">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Wh</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputCapacity" class="col-sm-3 col-form-label">Capacity</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" step="0.1" min="0.1" class="form-control" id="inputCapacity" placeholder="4.3" required name="Capacity">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Ah</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputMaxCurrent" class="col-sm-3 col-form-label">Max Current</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" step="0.1" min="1" class="form-control" id="inputMaxCurrent" placeholder="15" required name="Max Current">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">A</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputWeight" class="col-sm-3 col-form-label">Weight</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" step="1" min="1" class="form-control" id="inputWeight" placeholder="63" required name="Weight">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">g</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputPrice" class="col-sm-3 col-form-label">Price</label>
+                            <div class="col-sm-9 input-group">
+                                <input type="number" step="0.01" min="0.01" class="form-control" id="inputPrice" placeholder="4.25" required name="Price">
+                                <select class="form-control" id="inputCurrency" name="Currency">
+                                    <option>€</option>
+                                    <option>$</option>
+                                    <option>£</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inputDatasheet" class="col-sm-3 col-form-label">Data-sheet</label>
+                            <div class="col-sm-9 input-group">
+								<div class="col-sm-9">
+									<input type="file" class="form-control-file" id="inputDatasheet" accept=".pdf" name="Data-sheet">
+								</div>
+								<div class="col-sm-3">
+									<button type="button" class="btn btn-secondary" style="float:right;" onclick="$('#inputDatasheet')[0].value = '';"><i class="fas fa-undo"></i></button>
+								</div>
+							</div>
+						</div>
+						
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add cell</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- jQuery  -->
     <script src="/static/js/jquery-3.4.1.js"></script>
@@ -117,51 +343,434 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
     <!-- Popper and Bootstrap script bundle -->
     <script src="/static/js/bootstrap.bundle.js"></script>
 
+
     <!-- Bootstrap Table -->
     <script src="/static/bootstrap-table/bootstrap-table.js"></script>
     <script src="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.js"></script>
-    <script>
-        $('#table-cells').bootstrapTable({
-        classes: 'table table-hover',
-        stickyHeader: true,
-        stickyHeaderOffsetLeft: '3em',
-        stickyHeaderOffsetRight: '3em',
-        url: '/static/json/cells.json',
-        columns: [{
-                field: '#',
-                title: '#'
-            }, {
-                field: 'Name',
-                title: 'Name'
-            }, {
-                field: 'Voltage',
-                title: 'Voltage'
-            }, {
-                field: 'Energy',
-                title: 'Energy'
-            }, {
-                field: 'Capacity',
-                title: 'Capacity'
-            }, {
-                field: 'Max Power',
-                title: 'Max Power'
-            }, {
-                field: 'Max Current',
-                title: 'Max Current'
-            }, {
-                field: 'Weight',
-                title: 'Weight'
-            }, {
-                field: 'Price',
-                title: 'Price'
-            }, {
-                field: 'Data-sheet',
-                title: 'Data-sheet'
-            }, {
-                field: 'Manage',
-                title: 'Manage'
-            }]
-        })
+    <script type="application/javascript">
+
+        // So the user does not change several lines at the same time
+        var is_editing = false;
+		
+		var delete_confirmed = false;
+
+        // To remember the initial state
+        var initial_name        = "";
+        var initial_voltage     = "";
+        var initial_energy      = "";
+        var initial_capacity    = "";
+        var initial_max_current = "";
+        var initial_weight      = "";
+        var initial_price       = "";
+        var initial_datasheet   = "";
+        var initial_manage      = "";
+		
+		var update_datasheet = "";
+		
+		// Bootstrap's default behaviour is to delete the alert
+		function dismiss_alert(button) {
+			$(button.parentNode).hide();
+		}
+		
+		// To clean all alerts before new action
+		function hide_all_alerts() {
+			$('#alertSuccessAdded').hide();
+            $('#alertAlreadyExisting').hide();
+            $('#alertDatasheet').hide();
+			$('#alertSuccessDeleted').hide();
+			$('#alertErrorDeleted').hide();
+			$('#alertSuccessUpdated').hide();
+			$('#alertErrorUpdated').hide();
+		}
+		
+        function ajax_success(response) {
+			
+			console.log(response);
+            let status = response[response.length - 1]['Status'];
+
+            response.pop();
+
+            switch (status) {
+                case 'successAdded':
+                    $('#alertSuccessAdded').show();
+                    break;
+                case 'alreadyExisting':
+                    $('#alertAlreadyExisting').show();
+                    break;
+                case 'datasheet':
+                    $('#alertDatasheet').show();
+                    break;
+				case 'successDeleted':
+                    $('#alertSuccessDeleted').show();
+                    break;
+				case 'errorDeleted':
+                    $('#alertErrorDeleted').show();
+                    break;
+				case 'successUpdated':
+                    $('#alertSuccessUpdated').show();
+                    break;
+				case 'errorUpdated':
+                    $('#alertErrorUpdated').show();
+                    break;	
+            }
+			
+			table_from_json(response);
+        }
+		
+		function ajax_error() {
+            $('#alertAjaxError').fadeIn();
+        }
+		
+		function add_cell() {
+            if(is_editing) {
+                $('#modalStillEditing').modal('show');
+            }
+
+            else {
+                $('#modalAddCell').modal('show');
+            }
+        }
+	
+        $("#formAdd").submit(function(event){
+
+            event.preventDefault();
+			hide_all_alerts();
+			
+            let formData = new FormData(this);
+            
+            $('#modalAddCell').modal('hide');
+            
+            $.ajax({
+                type:       	"POST",
+                url:        	'/cell-inventory/',
+                data :      	formData,
+                processData:	false,
+                contentType: 	false,
+                success:    	ajax_success,
+                error:      	ajax_error,
+                dataType:   	'json'
+            });
+        });
+		
+		function delete_confirm() {
+			delete_confirmed = true;
+			$('#modalConfirmDelete').modal('hide');
+		}
+		
+		function delete_row(button_clicked) {
+
+            if(is_editing) {
+                $('#modalStillEditing').modal('show');
+            }
+
+            else {
+				hide_all_alerts();
+				let row = button_clicked.parentNode.parentNode;
+				let cellName = $(row).children()[0].innerHTML
+				document.getElementById("cellToDelete").innerHTML = cellName;
+				delete_confirmed = false;
+				$('#modalConfirmDelete').modal('show');
+				$('#modalConfirmDelete').on('hidden.bs.modal', function () {
+					
+					let formData = new FormData();
+					formData.append('Type', 'delete');
+					formData.append('Name', cellName);
+					
+					if (delete_confirmed) {
+						$.ajax({
+							type:       	"POST",
+							url:        	'/cell-inventory/',
+							data :      	formData,
+							processData:	false,
+							contentType: 	false,
+							success:    	ajax_success,
+							error:      	ajax_error,
+							dataType:   	'json'
+						});
+					}
+				});
+            }
+        }
+		
+		function save_edit() {
+			
+			hide_all_alerts();
+				
+			let formData = new FormData();
+			formData.append('Type', 'edit');
+			formData.append('InitialName', initial_name);
+			formData.append('Name', document.getElementById("editName").value);
+			formData.append('Voltage', document.getElementById("editVoltage").value)
+			formData.append('Energy', document.getElementById("editEnergy").value)
+			formData.append('Capacity', document.getElementById("editCapacity").value)
+			formData.append('Max Current', document.getElementById("editMaxCurrent").value)
+			formData.append('Weight', document.getElementById("editWeight").value)
+			formData.append('Price', document.getElementById("editPrice").value)
+			formData.append('Currency', document.getElementById("editCurrency").value)
+			
+			formData.append('DatasheetAction', update_datasheet)
+			formData.append('HadDatasheet', (initial_datasheet == '') ? false : true)
+			
+			if ($('#inputAddDatasheet')[0].value != '') {
+				formData.append('Data-sheet', $('#inputAddDatasheet')[0].files[0], $('#inputAddDatasheet')[0].value)
+			}
+			
+			$.ajax({
+				type:       	"POST",
+				url:        	'/cell-inventory/',
+				data :      	formData,
+				processData:	false,
+				contentType: 	false,
+				success:    	ajax_success,
+				error:      	ajax_error,
+				dataType:   	'json'
+			});
+        }	
+
+		function delete_datasheet() {
+			$('#editDelete').addClass('active');
+			$('#editAdd').removeClass('active');
+			$('#modalConfirmDatasheetDelete').modal('hide');
+			update_datasheet = "delete";
+			console.log(update_datasheet);
+		}
+		
+		function cancel_delete_datasheet() {
+			update_datasheet = (update_datasheet == "add") ? "add" : "none";
+			$('#editDelete').removeClass('active');
+			$('#modalConfirmDatasheetDelete').modal('hide');
+			console.log(update_datasheet);
+		}
+		
+		$("#formChooseDatasheet").submit(function(event){
+
+            event.preventDefault();
+			choose_datasheet();
+        });
+		
+		function choose_datasheet() {
+			$('#editAdd').addClass('active');
+			$('#editDelete').removeClass('active');
+			$('#modalChooseDatasheet').modal('hide');
+			update_datasheet = "add";
+			console.log(update_datasheet);
+		}
+		
+		function cancel_choose_datasheet() {
+			update_datasheet = (update_datasheet == "delete") ? "delete" : "none";
+			$('#editAdd').removeClass('active');
+			$('#modalChooseDatasheet').modal('hide');
+			console.log(update_datasheet);
+		}
+		
+        // When the "edit" button is clicked
+        function edit_row(button_clicked) {
+
+            if(is_editing) {
+                $('#modalStillEditing').modal('show');
+                return 1;
+            }
+
+            // Getting the row of the button called
+            let row = button_clicked.parentNode.parentNode;
+
+            initial_name        = $(row).children()[0].innerHTML;
+            initial_voltage     = $(row).children()[1].innerHTML;
+            initial_energy      = $(row).children()[2].innerHTML;
+            initial_capacity    = $(row).children()[3].innerHTML;
+            initial_max_current = $(row).children()[4].innerHTML;
+            initial_weight      = $(row).children()[5].innerHTML;
+            initial_price       = $(row).children()[6].innerHTML;
+            initial_datasheet   = $(row).children()[7].innerHTML;
+            initial_manage      = $(row).children()[8].innerHTML;
+
+            editing_mode(row);
+
+            $(row).children()[0].innerHTML = `<input type="text" id="editName" class="form-control" value="${initial_name}">`;
+
+            $(row).children()[1].innerHTML = `
+                <div class="input-group">
+                    <input type="number" step="0.1" min="0.1" id="editVoltage" class="form-control no-spin" value="${initial_voltage.slice(0, -1)}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">V</span>
+                    </div>
+                </div>`;
+
+            $(row).children()[2].innerHTML = `
+                <div class="input-group">
+                    <input type="number" step="0.01" min="0.01" id="editEnergy" class="form-control no-spin" value="${initial_energy.slice(0, -2)}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">Wh</span>
+                    </div>
+                </div>`;
+
+            $(row).children()[3].innerHTML = `
+                <div class="input-group">
+                    <input type="number" step="0.1" min="0.1" id="editCapacity" class="form-control no-spin" value="${initial_capacity.slice(0, -2)}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">Ah</span>
+                    </div>
+                </div>`;
+
+            $(row).children()[4].innerHTML = `
+                <div class="input-group">
+                    <input type="number" step="0.1" min="1" id="editMaxCurrent" class="form-control no-spin" value="${initial_max_current.slice(0, -1)}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">A</span>
+                    </div>
+                </div>`;
+
+            $(row).children()[5].innerHTML = `
+                <div class="input-group">
+                    <input type="number" step="1" min="1" id="editWeight" class="form-control no-spin" value="${initial_weight.slice(0, -1)}">
+                    <div class="input-group-append">
+                        <span class="input-group-text">g</span>
+                    </div>
+                </div>`;
+
+            $(row).children()[6].innerHTML = `
+                <div class="input-group">
+                    <input type="number" step="0.01" min="0.01" id="editPrice" class="form-control no-spin" value="${initial_price.slice(0, -1)}">
+                    <select class="form-control" id="editCurrency" value="£">
+                        <option>€</option>
+                        <option>$</option>
+                        <option>£</option>
+                    </select>
+                </div>`;
+				
+			document.getElementById('editCurrency').value = initial_price.slice(-1, initial_price.length);
+			
+			if ($(row).children()[7].innerHTML == '') {
+				$(row).children()[7].innerHTML = `<button type="button" id="editAdd" class="btn btn-outline-primary btn-sm" onclick="$('#modalChooseDatasheet').modal('show');"><i class="fas fa-plus"></i></button>`
+			}
+			else {
+				$(row).children()[7].innerHTML = `<button type="button" id="editDelete" class="btn btn-outline-danger btn-sm" onclick="$('#modalConfirmDatasheetDelete').modal('show');"><i class="fas fa-trash-alt"></i></button>
+				<button type="button" id="editAdd" class="btn btn-outline-primary btn-sm" onclick="$('#modalChooseDatasheet').modal('show');"><i class="fas fa-exchange-alt"></i></button>`
+			}
+        }
+		
+		function confirm_edit(button_clicked){
+		
+		}
+
+        function editing_mode(row) {
+            $(row).children()[8].innerHTML = `<button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this)"><i class="fas fa-ban"></i></button>
+                                              <button type="button" class="btn btn-outline-success btn-sm" onclick="save_edit()"><i class="fas fa-check"></i></button>`;
+            is_editing = true;
+			update_datasheet = "none";
+			$('#inputAddDatasheet')[0].value = '';
+        }
+
+
+
+        function discard(button_clicked) {
+            let row = button_clicked.parentNode.parentNode;
+
+            $(row).children()[0].innerHTML = initial_name;
+            $(row).children()[1].innerHTML = initial_voltage;
+            $(row).children()[2].innerHTML = initial_energy;
+            $(row).children()[3].innerHTML = initial_capacity;
+            $(row).children()[4].innerHTML = initial_max_current;
+            $(row).children()[5].innerHTML = initial_weight;
+            $(row).children()[6].innerHTML = initial_price;
+            $(row).children()[7].innerHTML = initial_datasheet;
+            $(row).children()[8].innerHTML = initial_manage;
+
+            is_editing = false;
+        }
+
+
+        function add_units(row) {
+            row["Voltage"] += "V";
+            row["Energy"] += "Wh";
+            row["Capacity"] += "Ah";
+            row["Max Current"] += "A";
+            row["Weight"] += "g";
+
+            return row;
+        }
+		
+		function table_from_json(json_cells) {
+			is_editing = false;
+			Object.keys(json_cells).forEach(function(key) {
+
+                json_cells[key] = add_units(json_cells[key]);
+
+                if(json_cells[key]["Data-sheet"]===true) {
+                    json_cells[key]["Data-sheet"] = `<a class="btn btn-secondary btn-sm" href="/static/datasheets/${json_cells[key]["Name"]}.pdf" target="_blank"><i class="fas fa-file-alt"></i></a>`;
+                }
+                else {
+                    json_cells[key]["Data-sheet"] = "";
+                }
+
+                json_cells[key]["Manage"] = `<button type="button" class="btn btn-outline-primary btn-sm hover-only" onclick="edit_row(this)"><i class="fas fa-edit"></i></button>
+                                             <button type="button" class="btn btn-outline-danger btn-sm hover-only" onclick="delete_row(this)"><i class="fas fa-trash-alt"></i></button>`;
+
+			})
+
+			$('#table-cells').bootstrapTable({
+				classes: 'table table-hover',
+				stickyHeader: true,
+				data: json_cells,
+				sortName: "Name",
+				sortOrder: "asc",
+				columns: [{
+						field: 'Name',
+						title: 'Name',
+						sortable: true
+					}, {
+						field: 'Voltage',
+						title: 'Voltage',
+						sortable: true,
+						width: 8,
+						widthUnit: "rem"
+					}, {
+						field: 'Energy',
+						title: 'Energy',
+						sortable: true
+					}, {
+						field: 'Capacity',
+						title: 'Capacity',
+						sortable: true
+					}, {
+						field: 'Max Current',
+						title: 'Max Current',
+						sortable: true,
+						width: 8,
+						widthUnit: "rem"
+					}, {
+						field: 'Weight',
+						title: 'Weight',
+						sortable: true
+					}, {
+						field: 'Price',
+						title: 'Price',
+						sortable: true
+					}, {
+						field: 'Data-sheet',
+						title: 'Data-sheet',
+						sortable: true,
+						width: 6,
+						widthUnit: 'rem'
+					}, {
+						field: 'Manage',
+						title: 'Manage',
+						width: 6,
+						widthUnit: 'rem'
+					}]
+			})
+
+			$('#table-cells').bootstrapTable("load", json_cells);
+
+		}
+		
+		$(document).ready(function() {
+			$.ajaxSetup({ cache: false });
+			$.getJSON('/static/json/cells.json').done(table_from_json);
+		});
+        
+
+        
     </script>
 
 
