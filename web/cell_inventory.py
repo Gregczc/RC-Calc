@@ -18,90 +18,148 @@
 # along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+from sqlite3.dbapi2 import Connection
+
 from flask import Blueprint, render_template, request
 from collections import OrderedDict
 import json
+import sqlite3
 
 cell_inventory = Blueprint('cell-inventory', __name__)
 
 
-def get_json(file):
-    try:
-        f = open(file, 'r+', encoding="utf-8")
-        json_cells = json.loads(f.read(), object_pairs_hook=OrderedDict)
-        f.close()
-        return json_cells
+def initialize_db():
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
 
-    except IOError as e:
-        print(e)
-        return None
-
-
-def update_json(file, content):
-    try:
-        # Clearing the json file
-        open(file, 'w').close()
-
-        # Updating the json file
-        f = open(file, 'r+', encoding="utf-8")
-        f.write(content)
-        f.close()
-
-    except IOError as e:
-        print(e)
+    c.execute('''CREATE TABLE IF NOT EXISTS Cells (name text, voltage real, energy real, capacity real, 
+                                                    max_current real, weight real, price text, datasheet blob)''')
+    # Save (commit) the changes
+    conn.commit()
+    conn.close()
 
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ["pdf"]
 
 
+def read_db():
+
+    initialize_db()
+
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
+
+    json_cells = []
+    for cell in c.execute("SELECT * FROM Cells"):
+        json_cells.append({
+            'Name': cell[0],
+            'Voltage': cell[1],
+            'Energy': cell[2],
+            'Capacity': cell[3],
+            'Max Current': cell[4],
+            'Weight': cell[5],
+            'Price': cell[6],
+            'Data-sheet': False if cell[7] == b"0" else True
+        })
+
+    conn.commit()
+    conn.close()
+
+    return json_cells
+
+
+def add_in_db(cell):
+
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
+
+    c.execute("SELECT COUNT(*) FROM Cells WHERE name = ?", (request.form['Name'],))
+    if c.fetchall()[0][0] != 0:
+        conn.close()
+        return "alreadyExisting"
+
+    else:
+        # Insert a row of data
+        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?)", cell)
+
+        # Save (commit) the changes
+        conn.commit()
+        conn.close()
+
+        return "successAdded"
+
+
+def delete_in_db(name):
+
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
+
+    c.execute("DELETE FROM Cells WHERE name = ?", (name,))
+
+    c.execute("SELECT COUNT(*) FROM Cells WHERE name = ?", (name,))
+    if c.fetchall()[0][0] != 0:
+        status = "errorDeleted"
+    else:
+        status = "successDeleted"
+
+    conn.commit()
+    conn.close()
+
+    return status
+
+
+def get_cells():
+
+    json_cells = read_db()
+    json_cells.append({'Status': "ok"})
+
+    return json.dumps(json_cells)
+
+
+def get_datasheet(name):
+
+    initialize_db()
+
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
+
+    for cell in c.execute("SELECT datasheet FROM Cells WHERE name = ?", (name,)):
+        datasheet = cell[0]
+
+    conn.commit()
+    conn.close()
+
+    return datasheet
+
+
 def add_cell(request):
 
-    status = "successAdded"
+    datasheet_error = False
+
     print(request.files)
 
     if request.files['Data-sheet'].filename != "":
-        try:
-            if allowed_file(request.files['Data-sheet'].filename):
-                # Using io since I can't figure why request.files['Data-sheet'].save([...]) throws an Errno 13
-                f = open('web/static/datasheets/' + request.form['Name'] + ".pdf", "wb+")
-                f.write(request.files['Data-sheet'].read())
-                f.close()
-                has_datasheet = True
+        if allowed_file(request.files['Data-sheet'].filename):
 
-            else:
-                has_datasheet = False
-                print("Unauthorized file name / type.")
-                status = "datasheet"
+            blob = sqlite3.Binary(request.files['Data-sheet'].read())
 
-        except IOError as e:
-            print(e)
-            has_datasheet = False
-            status = "datasheet"
+        else:
+            blob = sqlite3.Binary(b"0")
+            print("Unauthorized file name / type.")
+            datasheet_error = True
+
     else:
-        has_datasheet = False
-    # Not very elegant, but to ensure that the data are written in the json in a consistent order
-    # to make it easier to read by a human
-    cell_dict = OrderedDict([
-        ('Name', request.form['Name']),
-        ('Voltage', request.form['Voltage']),
-        ('Energy', request.form['Energy']),
-        ('Capacity', request.form['Capacity']),
-        ('Max Current', request.form['Max Current']),
-        ('Weight', request.form['Weight']),
-        ('Price', request.form['Price'] + request.form['Currency']),
-        ('Data-sheet', has_datasheet)
-    ])
+        blob = sqlite3.Binary(b"0")
 
-    json_cells = get_json('web/static/json/cells.json')
+    cell = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
+            request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
+            blob.tobytes())
 
-    if request.form['Name'] in [cell['Name'] for cell in json_cells]:
-        status = "alreadyExisting"
-    else:
-        # Adding the new cell
-        json_cells.append(cell_dict)
+    status = add_in_db(cell)
+    status = "datasheet" if datasheet_error and status == "successAdded" else status
 
-    update_json('web/static/json/cells.json', json.dumps(json_cells, indent=2, ensure_ascii=False))
+    json_cells = read_db()
 
     json_cells.append({'Status': status})
 
@@ -109,23 +167,10 @@ def add_cell(request):
 
 
 def delete_cell(name):
-    status = "errorDeleted"
 
-    json_cells = get_json('web/static/json/cells.json')
+    status = delete_in_db(name)
 
-    for cell in json_cells:
-        if name == cell['Name']:
-            if cell['Data-sheet']:
-                try:
-                    os.remove('web/static/datasheets/' + name + ".pdf")
-                except IOError as e:
-                    print(e)
-
-            json_cells.remove(cell)
-            status = 'successDeleted'
-            break
-
-    update_json('web/static/json/cells.json', json.dumps(json_cells, indent=2, ensure_ascii=False))
+    json_cells = read_db()
 
     json_cells.append({'Status': status})
 
@@ -133,86 +178,58 @@ def delete_cell(name):
 
 
 def edit_cell(request):
-    print(request.files)
-    status = "successUpdated"
+    datasheet_error = False
 
-    json_cells = get_json('web/static/json/cells.json')
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
 
-    for cell in json_cells:
-        if request.form['InitialName'] == cell['Name']:
-            json_cells.remove(cell)
-            break
+    if request.form['DatasheetAction'] == "delete":
+        update = (sqlite3.Binary(b"0").tobytes(), request.form['InitialName'])
+        c.execute('''UPDATE Cells SET datasheet = ? WHERE name = ?''', update)
 
-    if request.form['Name'] in [cell['Name'] for cell in json_cells]:
-        # sending back the previous tab
-        status = "alreadyExisting"
-        json_cells = get_json('web/static/json/cells.json')
-        json_cells.append({'Status': status})
-        return json.dumps(json_cells)
+    elif request.form['DatasheetAction'] == "add":
+        if request.files['Data-sheet'].filename != "":
+            if allowed_file(request.files['Data-sheet'].filename):
+                blob = sqlite3.Binary(request.files['Data-sheet'].read())
 
-    else:
-        if request.form['HadDatasheet'] == 'true' and request.form['DatasheetAction'] == "delete":
-            try:
-                os.remove('web/static/datasheets/' + request.form['InitialName'] + ".pdf")
-                has_datasheet = False
-            except IOError as e:
-                print(e)
-                status = "errorUpdated"
-
-        elif request.form['HadDatasheet'] == 'true' and request.form['DatasheetAction'] == "none":
-            try:
-                os.rename('web/static/datasheets/' + request.form['InitialName'] + ".pdf", 'web/static/datasheets/' + request.form['Name'] + ".pdf")
-                has_datasheet = True
-            except IOError as e:
-                print(e)
-                status = "errorUpdated"
-
-        elif request.form['DatasheetAction'] == "add":
-            try:
-                if request.form['HadDatasheet'] == 'true':
-                    os.remove('web/static/datasheets/' + request.form['InitialName'] + ".pdf")
-
-                if allowed_file(request.files['Data-sheet'].filename):
-                    # Using io since I can't figure why request.files['Data-sheet'].save([...]) throws an Errno 13
-                    f = open('web/static/datasheets/' + request.form['Name'] + ".pdf", "wb+")
-                    f.write(request.files['Data-sheet'].read())
-                    f.close()
-                    has_datasheet = True
-                else:
-                    has_datasheet = False
-                    status = "errorUpdated"
-            except IOError as e:
-                print(e)
-                status = "errorUpdated"
+            else:
+                blob = sqlite3.Binary(b"0")
+                print("Unauthorized file name / type.")
+                datasheet_error = True
 
         else:
-            has_datasheet = False
+            blob = sqlite3.Binary(b"0")
 
-        cell_dict = OrderedDict([
-            ('Name', request.form['Name']),
-            ('Voltage', request.form['Voltage']),
-            ('Energy', request.form['Energy']),
-            ('Capacity', request.form['Capacity']),
-            ('Max Current', request.form['Max Current']),
-            ('Weight', request.form['Weight']),
-            ('Price', request.form['Price'] + request.form['Currency']),
-            ('Data-sheet', has_datasheet)
-        ])
+        update = (blob.tobytes(), request.form['InitialName'])
+        c.execute('''UPDATE Cells SET datasheet = ? WHERE name = ?''', update)
 
-        json_cells.append(cell_dict)
+    update = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
+            request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
+            request.form['InitialName'])
 
-        update_json('web/static/json/cells.json', json.dumps(json_cells, indent=2, ensure_ascii=False))
+    c.execute('''UPDATE Cells SET name = ?, voltage = ?, energy = ?, capacity = ?, max_current = ?, weight = ?,
+            price = ? WHERE name = ?''', update)
 
-        json_cells.append({'Status': status})
+    conn.commit()
+    conn.close()
 
-        return json.dumps(json_cells)
+    status = "datasheet" if datasheet_error else "successUpdated"
+
+    json_cells = read_db()
+
+    json_cells.append({'Status': status})
+
+    return json.dumps(json_cells)
 
 
 @cell_inventory.route('/', methods=['GET', 'POST'])
 def show():
     print(request.form)
     if request.method == 'POST' and 'Type' in request.form:
-        if request.form['Type'] == 'add':
+        if request.form['Type'] == 'get_cells':
+            return get_cells()
+
+        elif request.form['Type'] == 'add':
             return add_cell(request)
 
         elif request.form['Type'] == 'edit':
@@ -223,6 +240,9 @@ def show():
 
         else:
             return render_template('cell-inventory.html')
+
+    elif request.method == 'GET' and request.args.get('Type') == 'get_datasheet':
+        return get_datasheet(request.args.get('Name'))
 
     else:
         return render_template('cell-inventory.html')

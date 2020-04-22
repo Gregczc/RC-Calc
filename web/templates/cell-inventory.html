@@ -385,7 +385,6 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 		
         function ajax_success(response) {
 			
-			console.log(response);
             let status = response[response.length - 1]['Status'];
 
             response.pop();
@@ -411,7 +410,9 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     break;
 				case 'errorUpdated':
                     $('#alertErrorUpdated').show();
-                    break;	
+                    break;
+				default:
+					break;
             }
 			
 			table_from_json(response);
@@ -471,18 +472,12 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				delete_confirmed = false;
 				$('#modalConfirmDelete').modal('show');
 				$('#modalConfirmDelete').on('hidden.bs.modal', function () {
-					
-					let formData = new FormData();
-					formData.append('Type', 'delete');
-					formData.append('Name', cellName);
-					
+										
 					if (delete_confirmed) {
 						$.ajax({
 							type:       	"POST",
 							url:        	'/cell-inventory/',
-							data :      	formData,
-							processData:	false,
-							contentType: 	false,
+							data :      	'Type=delete&Name=' + cellName,
 							success:    	ajax_success,
 							error:      	ajax_error,
 							dataType:   	'json'
@@ -690,6 +685,36 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             return row;
         }
 		
+				
+		function get_datasheet(button_clicked) {
+			
+			let row = button_clicked.parentNode.parentNode;
+			let cell_name = $(row).children()[0].innerHTML;
+			
+			var oReq = new XMLHttpRequest();
+			oReq.open('GET', '/cell-inventory/?Type=get_datasheet&Name=' + cell_name, true);
+			oReq.responseType = 'arraybuffer';
+			
+			oReq.onload = function (oEvent) {
+				
+				let arrayBuffer = oReq.response;
+				blob = new Blob([arrayBuffer], {type: 'application/pdf'});
+				
+				let url = window.URL.createObjectURL(blob);
+	
+				let a = document.createElement('a');
+				a.style.display = 'none';
+				a.href = url;
+				a.download = cell_name + '.pdf';
+				document.body.appendChild(a);
+				a.click();
+				window.URL.revokeObjectURL(url);
+			};
+			
+			oReq.send(null);
+						
+		}
+		
 		function table_from_json(json_cells) {
 			is_editing = false;
 			Object.keys(json_cells).forEach(function(key) {
@@ -697,7 +722,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                 json_cells[key] = add_units(json_cells[key]);
 
                 if(json_cells[key]["Data-sheet"]===true) {
-                    json_cells[key]["Data-sheet"] = `<a class="btn btn-secondary btn-sm" href="/static/datasheets/${json_cells[key]["Name"]}.pdf" target="_blank"><i class="fas fa-file-alt"></i></a>`;
+                    json_cells[key]["Data-sheet"] = `<button type="button" class="btn btn-secondary btn-sm" onclick="get_datasheet(this)"><i class="fas fa-file-alt"></i></button>`;
                 }
                 else {
                     json_cells[key]["Data-sheet"] = "";
@@ -708,10 +733,18 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
 			})
 
+			
+
+			$('#table-cells').bootstrapTable("load", json_cells);
+
+		}
+		
+		
+		$(document).ready(function() {
+			
 			$('#table-cells').bootstrapTable({
 				classes: 'table table-hover',
 				stickyHeader: true,
-				data: json_cells,
 				sortName: "Name",
 				sortOrder: "asc",
 				columns: [{
@@ -758,15 +791,17 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 						width: 6,
 						widthUnit: 'rem'
 					}]
-			})
-
-			$('#table-cells').bootstrapTable("load", json_cells);
-
-		}
-		
-		$(document).ready(function() {
-			$.ajaxSetup({ cache: false });
-			$.getJSON('/static/json/cells.json').done(table_from_json);
+			});
+			
+			$.ajax({
+				type:       	"POST",
+				url:        	'/cell-inventory/',
+				data :      	'Type=get_cells',
+				success:    	ajax_success,
+				error:      	ajax_error,
+				dataType:   	'json'
+			});
+			
 		});
         
 
