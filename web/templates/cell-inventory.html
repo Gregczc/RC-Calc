@@ -52,6 +52,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
     <!-- Bootstrap Table CSS -->
     <link rel="stylesheet" href="/static/bootstrap-table/bootstrap-table.css">
     <link rel="stylesheet" href="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.css">
+    <link rel="stylesheet" href="/static/bootstrap-table/extensions/fixed-columns/bootstrap-table-fixed-columns.css">
 
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="/static/css/style_main.css">
@@ -82,7 +83,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div id="alertAlreadyExisting" class="alert alert-danger fade show" role="alert" style="display:none;">
-                <strong>Error!</strong> A cell was already existing with the same name and was not added.
+                <strong>Error!</strong> A cell is already existing with the same name.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -131,14 +132,16 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <h2>Cell Inventory</h2>
-            <p>This page shows the different cells available to build a pack in the <a href="/battery-configurator/">battery configurator page</a>.</p>
+            <p>This page a to manage the cells available to build a pack in the <a href="/battery-configurator/">battery configurator page</a>.</p>
 
             <div class="line"></div>
 
             <button id="addButton" type="button" class="btn btn-outline-primary" onclick="add_cell()">
-                <i class="fas fa-plus"></i><span>Add a cell</span>
+                <i class="fas fa-plus"></i><span class="px-2">Add a cell</span>
             </button>
-            <table id="table-cells"></table>
+			<form id="formEdit">
+				<table id="table-cells"></table>
+			</form>
         </div>
     </div>
 
@@ -291,7 +294,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                         <div class="form-group row">
                             <label for="inputWeight" class="col-sm-3 col-form-label">Weight</label>
                             <div class="col-sm-9 input-group">
-                                <input type="number" step="1" min="1" class="form-control" id="inputWeight" placeholder="63" required name="Weight">
+                                <input type="number" step="0.1" min="1" class="form-control" id="inputWeight" placeholder="63" required name="Weight">
                                 <div class="input-group-append">
                                     <span class="input-group-text">g</span>
                                 </div>
@@ -347,7 +350,9 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
     <!-- Bootstrap Table -->
     <script src="/static/bootstrap-table/bootstrap-table.js"></script>
     <script src="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.js"></script>
-    <script type="application/javascript">
+    <script src="/static/bootstrap-table/extensions/fixed-columns/bootstrap-table-fixed-columns.js"></script>
+
+	<script type="application/javascript">
 
         // So the user does not change several lines at the same time
         var is_editing = false;
@@ -487,8 +492,9 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             }
         }
 		
-		function save_edit() {
+		$("#formEdit").submit(function(event){
 			
+			event.preventDefault();
 			hide_all_alerts();
 				
 			let formData = new FormData();
@@ -520,7 +526,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				error:      	ajax_error,
 				dataType:   	'json'
 			});
-        }	
+        });	
 
 		function delete_datasheet() {
 			$('#editDelete').addClass('active');
@@ -579,54 +585,56 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             initial_datasheet   = $(row).children()[7].innerHTML;
             initial_manage      = $(row).children()[8].innerHTML;
 
-            editing_mode(row);
-
-            $(row).children()[0].innerHTML = `<input type="text" id="editName" class="form-control" value="${initial_name}">`;
+            is_editing = true;
+			update_datasheet = "none";
+			$('#inputAddDatasheet')[0].value = '';
+			
+            $(row).children()[0].innerHTML = `<input type="text" id="editName" class="form-control form-control-sm" value="${initial_name}" required>`;
 
             $(row).children()[1].innerHTML = `
-                <div class="input-group">
-                    <input type="number" step="0.1" min="0.1" id="editVoltage" class="form-control no-spin" value="${initial_voltage.slice(0, -1)}">
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="0.1" id="editVoltage" class="form-control no-spin" value="${initial_voltage.slice(0, -1)}" required>
                     <div class="input-group-append">
                         <span class="input-group-text">V</span>
                     </div>
                 </div>`;
 
             $(row).children()[2].innerHTML = `
-                <div class="input-group">
-                    <input type="number" step="0.01" min="0.01" id="editEnergy" class="form-control no-spin" value="${initial_energy.slice(0, -2)}">
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.01" min="0.01" id="editEnergy" class="form-control no-spin" value="${initial_energy.slice(0, -2)}" required>
                     <div class="input-group-append">
                         <span class="input-group-text">Wh</span>
                     </div>
                 </div>`;
 
             $(row).children()[3].innerHTML = `
-                <div class="input-group">
-                    <input type="number" step="0.1" min="0.1" id="editCapacity" class="form-control no-spin" value="${initial_capacity.slice(0, -2)}">
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="0.1" id="editCapacity" class="form-control no-spin" value="${initial_capacity.slice(0, -2)}" required>
                     <div class="input-group-append">
                         <span class="input-group-text">Ah</span>
                     </div>
                 </div>`;
 
             $(row).children()[4].innerHTML = `
-                <div class="input-group">
-                    <input type="number" step="0.1" min="1" id="editMaxCurrent" class="form-control no-spin" value="${initial_max_current.slice(0, -1)}">
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="1" id="editMaxCurrent" class="form-control no-spin" value="${initial_max_current.slice(0, -1)}" required>
                     <div class="input-group-append">
                         <span class="input-group-text">A</span>
                     </div>
                 </div>`;
 
             $(row).children()[5].innerHTML = `
-                <div class="input-group">
-                    <input type="number" step="1" min="1" id="editWeight" class="form-control no-spin" value="${initial_weight.slice(0, -1)}">
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="1" id="editWeight" class="form-control no-spin" value="${initial_weight.slice(0, -1)}" required>
                     <div class="input-group-append">
                         <span class="input-group-text">g</span>
                     </div>
                 </div>`;
 
             $(row).children()[6].innerHTML = `
-                <div class="input-group">
-                    <input type="number" step="0.01" min="0.01" id="editPrice" class="form-control no-spin" value="${initial_price.slice(0, -1)}">
-                    <select class="form-control" id="editCurrency" value="£">
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.01" min="0.01" id="editPrice" class="form-control no-spin" value="${initial_price.slice(0, -1)}" required>
+                    <select class="form-control form-control-sm" id="editCurrency" value="£">
                         <option>€</option>
                         <option>$</option>
                         <option>£</option>
@@ -642,21 +650,14 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				$(row).children()[7].innerHTML = `<button type="button" id="editDelete" class="btn btn-outline-danger btn-sm" onclick="$('#modalConfirmDatasheetDelete').modal('show');"><i class="fas fa-trash-alt"></i></button>
 				<button type="button" id="editAdd" class="btn btn-outline-primary btn-sm" onclick="$('#modalChooseDatasheet').modal('show');"><i class="fas fa-exchange-alt"></i></button>`
 			}
+			
+			 $(row).children()[8].innerHTML = `<button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this)"><i class="fas fa-ban"></i></button>
+                                              <button type="submit" class="btn btn-outline-success btn-sm"><i class="fas fa-check"></i></button>`;
         }
 		
 		function confirm_edit(button_clicked){
 		
 		}
-
-        function editing_mode(row) {
-            $(row).children()[8].innerHTML = `<button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this)"><i class="fas fa-ban"></i></button>
-                                              <button type="button" class="btn btn-outline-success btn-sm" onclick="save_edit()"><i class="fas fa-check"></i></button>`;
-            is_editing = true;
-			update_datasheet = "none";
-			$('#inputAddDatasheet')[0].value = '';
-        }
-
-
 
         function discard(button_clicked) {
             let row = button_clicked.parentNode.parentNode;
@@ -747,6 +748,9 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				stickyHeader: true,
 				sortName: "Name",
 				sortOrder: "asc",
+				fixedColumns: true,
+                fixedNumber: 2,
+                fixedRightNumber: 1,
 				columns: [{
 						field: 'Name',
 						title: 'Name',

@@ -17,32 +17,23 @@
     along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#addButton {
-    float: right;
-    margin-right: 0rem;
-    margin-bottom: 2rem;
-}
+/*
+.card-header > button {
+    margin-right: 0.25rem;
+    float:right;
+}*/
 
-table {
-    text-align: center;
+.card-body {
+    font-weight: 350;
+    color: #555;
 }
 
 .hover-only {
+    margin-left: 0.4rem;
     visibility: hidden !important;
+    float:right;
 }
 
-tr:hover > td > .hover-only {
+.card:hover > .card-header > .hover-only {
     visibility: visible !important;
-}
-
-td > button {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 0.01rem;
-}
-
-.no-spin {
-    -webkit-appearance: none !important;
-    margin: 0 !important;
-    -moz-appearance:textfield !important;
 }

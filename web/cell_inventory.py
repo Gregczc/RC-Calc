@@ -31,9 +31,16 @@ cell_inventory = Blueprint('cell-inventory', __name__)
 def initialize_db():
     conn = sqlite3.connect('db/user.db')
     c = conn.cursor()
-
-    c.execute('''CREATE TABLE IF NOT EXISTS Cells (name text, voltage real, energy real, capacity real, 
-                                                    max_current real, weight real, price text, datasheet blob)''')
+    c.execute("PRAGMA foreign_keys = ON;")
+    c.execute('''CREATE TABLE IF NOT EXISTS Cells ( name text,
+                                                    voltage real,
+                                                    energy real,
+                                                    capacity real, 
+                                                    max_current real,
+                                                    weight real,
+                                                    price text,
+                                                    datasheet blob,
+                                                    cell_id INTEGER PRIMARY KEY)''')
     # Save (commit) the changes
     conn.commit()
     conn.close()
@@ -43,12 +50,13 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ["pdf"]
 
 
-def read_db():
+def get_cells(status='ok'):
 
     initialize_db()
 
     conn = sqlite3.connect('db/user.db')
     c = conn.cursor()
+    c.execute("PRAGMA foreign_keys = ON;")
 
     json_cells = []
     for cell in c.execute("SELECT * FROM Cells"):
@@ -66,53 +74,7 @@ def read_db():
     conn.commit()
     conn.close()
 
-    return json_cells
-
-
-def add_in_db(cell):
-
-    conn = sqlite3.connect('db/user.db')
-    c = conn.cursor()
-
-    c.execute("SELECT COUNT(*) FROM Cells WHERE name = ?", (request.form['Name'],))
-    if c.fetchall()[0][0] != 0:
-        conn.close()
-        return "alreadyExisting"
-
-    else:
-        # Insert a row of data
-        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?)", cell)
-
-        # Save (commit) the changes
-        conn.commit()
-        conn.close()
-
-        return "successAdded"
-
-
-def delete_in_db(name):
-
-    conn = sqlite3.connect('db/user.db')
-    c = conn.cursor()
-
-    c.execute("DELETE FROM Cells WHERE name = ?", (name,))
-
-    c.execute("SELECT COUNT(*) FROM Cells WHERE name = ?", (name,))
-    if c.fetchall()[0][0] != 0:
-        status = "errorDeleted"
-    else:
-        status = "successDeleted"
-
-    conn.commit()
-    conn.close()
-
-    return status
-
-
-def get_cells():
-
-    json_cells = read_db()
-    json_cells.append({'Status': "ok"})
+    json_cells.append({'Status': status})
 
     return json.dumps(json_cells)
 
@@ -123,6 +85,7 @@ def get_datasheet(name):
 
     conn = sqlite3.connect('db/user.db')
     c = conn.cursor()
+    c.execute("PRAGMA foreign_keys = ON;")
 
     for cell in c.execute("SELECT datasheet FROM Cells WHERE name = ?", (name,)):
         datasheet = cell[0]
@@ -154,27 +117,48 @@ def add_cell(request):
 
     cell = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
             request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
-            blob.tobytes())
+            blob.tobytes(), None)
 
-    status = add_in_db(cell)
-    status = "datasheet" if datasheet_error and status == "successAdded" else status
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
+    c.execute("PRAGMA foreign_keys = ON;")
 
-    json_cells = read_db()
+    c.execute("SELECT COUNT(*) FROM Cells WHERE name = ?", (request.form['Name'],))
+    if c.fetchall()[0][0] != 0:
+        conn.close()
+        status = "alreadyExisting"
 
-    json_cells.append({'Status': status})
+    else:
+        # Insert a row of data
+        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", cell)
 
-    return json.dumps(json_cells)
+        # Save (commit) the changes
+        conn.commit()
+        conn.close()
+
+        status = "successAdded" if not datasheet_error else "datasheet"
+
+    return get_cells(status)
 
 
 def delete_cell(name):
 
-    status = delete_in_db(name)
+    conn = sqlite3.connect('db/user.db')
+    c = conn.cursor()
+    c.execute("PRAGMA foreign_keys = ON;")
 
-    json_cells = read_db()
+    c.execute("DELETE FROM Cells WHERE name = ?", (name,))
 
-    json_cells.append({'Status': status})
+    c.execute("SELECT COUNT(*) FROM Cells WHERE name = ?", (name,))
+    if c.fetchall()[0][0] != 0:
+        status = "errorDeleted"
+    else:
+        status = "successDeleted"
 
-    return json.dumps(json_cells)
+    conn.commit()
+    conn.close()
+
+    return get_cells(status)
 
 
 def edit_cell(request):
@@ -182,6 +166,7 @@ def edit_cell(request):
 
     conn = sqlite3.connect('db/user.db')
     c = conn.cursor()
+    c.execute("PRAGMA foreign_keys = ON;")
 
     if request.form['DatasheetAction'] == "delete":
         update = (sqlite3.Binary(b"0").tobytes(), request.form['InitialName'])
@@ -203,23 +188,25 @@ def edit_cell(request):
         update = (blob.tobytes(), request.form['InitialName'])
         c.execute('''UPDATE Cells SET datasheet = ? WHERE name = ?''', update)
 
-    update = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
-            request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
-            request.form['InitialName'])
+    new_cell = c.execute("SELECT * FROM Cells WHERE name = ?", (request.form['Name'],)).fetchall()
+    initial_cell = c.execute("SELECT * FROM Cells WHERE name = ?", (request.form['InitialName'],)).fetchall()
 
-    c.execute('''UPDATE Cells SET name = ?, voltage = ?, energy = ?, capacity = ?, max_current = ?, weight = ?,
-            price = ? WHERE name = ?''', update)
+    if len(new_cell) != 0 and new_cell != initial_cell:
+        status = "alreadyExisting"
 
-    conn.commit()
+    else:
+        update = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
+                request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
+                request.form['InitialName'])
+
+        c.execute('''UPDATE Cells SET name = ?, voltage = ?, energy = ?, capacity = ?, max_current = ?, weight = ?,
+                price = ? WHERE name = ?''', update)
+        status = "datasheet" if datasheet_error else "successUpdated"
+        conn.commit()
+
     conn.close()
 
-    status = "datasheet" if datasheet_error else "successUpdated"
-
-    json_cells = read_db()
-
-    json_cells.append({'Status': status})
-
-    return json.dumps(json_cells)
+    return get_cells(status)
 
 
 @cell_inventory.route('/', methods=['GET', 'POST'])
