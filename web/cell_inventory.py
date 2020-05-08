@@ -17,11 +17,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-from sqlite3.dbapi2 import Connection
-
 from flask import Blueprint, render_template, request
-from collections import OrderedDict
 import json
 import sqlite3
 
@@ -35,7 +31,7 @@ def initialize_db():
     c.execute('''CREATE TABLE IF NOT EXISTS Cells ( name text,
                                                     voltage real,
                                                     energy real,
-                                                    capacity real, 
+                                                    capacity real,
                                                     max_current real,
                                                     weight real,
                                                     price text,
@@ -196,8 +192,8 @@ def edit_cell(request):
 
     else:
         update = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
-                request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
-                request.form['InitialName'])
+                  request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
+                  request.form['InitialName'])
 
         c.execute('''UPDATE Cells SET name = ?, voltage = ?, energy = ?, capacity = ?, max_current = ?, weight = ?,
                 price = ? WHERE name = ?''', update)
@@ -233,4 +229,3 @@ def show():
 
     else:
         return render_template('cell-inventory.html')
-

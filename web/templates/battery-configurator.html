@@ -345,8 +345,10 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 			new_card.innerHTML = `<div class="card h-100">
 									<div class="card-header">
 										${battery['Name']}
-										<button type="button" class="btn btn-outline-primary btn-sm hover-only" onclick="edit_card(this);"><i class="fas fa-edit"></i></button>
-										<button type="button" class="btn btn-outline-danger btn-sm hover-only" onclick="delete_card(this);"><i class="fas fa-trash-alt"></i></button>
+										<span class="manage-group">
+											<button type="button" class="btn btn-outline-primary btn-sm hover-only" onclick="edit_card(this);"><i class="fas fa-edit"></i></button>
+											<button type="button" class="btn btn-outline-danger btn-sm hover-only" onclick="delete_card(this);"><i class="fas fa-trash-alt"></i></button>
+										</span>
 									</div>
 									<div class="card-body">
 										<ul class="list-group list-group-flush">
@@ -375,9 +377,11 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 										New battery
 									</div>
 									<div class="card-body">
-										<button id="addButton" type="button" class="btn btn-outline-primary btn-block h-100" onclick="edit_card(this)">
-											<i class="fas fa-plus"></i><span class="p-3">Add a battery</span>
-										</button>
+										<div class="h-100"><!-- Dummy element-->
+											<button id="addButton" type="button" class="btn btn-outline-primary btn-block h-100" onclick="edit_card(this)">
+												<i class="fas fa-plus"></i><span class="p-3">Add a battery</span>
+											</button>
+										</div>
 									</div>
 								</div>`
 								
@@ -413,7 +417,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                 return 1;
             }
 			
-			initial_card_element = button_clicked.parentNode.parentNode.parentNode;
+			initial_card_element = button_clicked.parentNode.parentNode.parentNode.parentNode;
 			initial_card_content = initial_card_element.innerHTML;
 						
 			let new_card = (initial_card_element.id == 'addCard') ? true : false;
@@ -548,7 +552,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             else {
 				hide_all_alerts();
 				
-				let card_clicked = button_clicked.parentNode.parentNode.parentNode;
+				let card_clicked = button_clicked.parentNode.parentNode.parentNode.parentNode;
 				let battery_name = card_clicked.children[0].children[0].innerText;
 				
 				document.getElementById("batteryToDelete").innerHTML = battery_name;

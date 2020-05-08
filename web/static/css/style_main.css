@@ -29,14 +29,6 @@ p {
     color: #999;
 }
 
-a,
-a:hover,
-a:focus {
-    color: inherit;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
 .navbar {
     padding: 15px 10px;
     background: #fff;
@@ -64,9 +56,22 @@ span {
     display: inline-block;
 }
 
+#dropdownMenuButton {
+    margin-right: 1em;
+    right: 200%;
+  }
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
+
+a.sidebar-link,
+a.sidebar-link,
+a.sidbar-link:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
 
 .wrapper {
     display: flex;
@@ -97,24 +102,24 @@ span {
     display: block;
 }
 
-#sidebar ul li a {
+#sidebar ul li a.sidebar-link {
     text-align: left;
 }
 
-#sidebar.active ul li a {
+#sidebar.active ul li a.sidebar-link {
     padding: 20px 10px;
     text-align: center;
     font-size: 0.85em;
 }
 
-#sidebar.active ul li a i {
+#sidebar.active ul li a.sidebar-link i {
     margin-right: 0;
     display: block;
     font-size: 1.8em;
     margin-bottom: 5px;
 }
 
-#sidebar.active ul ul a {
+#sidebar.active ul ul a.sidebar-link {
     padding: 10px !important;
 }
 
@@ -158,12 +163,12 @@ span {
 }
 
 #sidebar ul li.active>a,
-a[aria-expanded="true"] {
+a.sidebar-link[aria-expanded="true"] {
     color: #fff;
     background: #6d7fcc;
 }
 
-a[data-toggle="collapse"] {
+a.sidebar-link[data-toggle="collapse"] {
     position: relative;
 }
 
@@ -174,10 +179,9 @@ a[data-toggle="collapse"] {
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
-
 }
 
-ul ul a {
+ul ul a.sidebar-link {
     font-size: 0.9em !important;
     padding-left: 30px !important;
     background: #6d7fcc;
@@ -187,7 +191,7 @@ ul.CTAs {
     padding: 20px;
 }
 
-ul.CTAs a {
+ul.CTAs a.sidebar-link {
     text-align: center;
     font-size: 0.9em !important;
     display: block;
@@ -259,7 +263,3 @@ ul.CTAs a {
     }
 }
 
-#dropdownMenuButton {
-  margin-right: 1em;
-  //right: 200%;
-}

@@ -19,31 +19,7 @@
 
 
 import io
-import sqlite3
 from flask import Blueprint
-
-
-def open_db():
-    # Needs a complete re-write
-
-    # Opening the database
-    conn = sqlite3.connect('./db/RC-Calc.db')
-
-    # Creating the flight-time table if it does not exists
-    conn.execute('''CREATE TABLE IF NOT EXISTS flight_time_table
-                 (number real, aircraft text, distance real, flight_time real, description text)''')
-
-    # Counting number of records in flight_time_table
-    n_flights = conn.execute('''SELECT COUNT(*) FROM flight_time_table;''')
-
-    # Getting the POST info from the user
-    # form = cgi.FieldStorage()
-
-    # Save changes
-    conn.commit()
-
-    # Closing database
-    conn.close()
 
 
 def new_entry_form(plane):
@@ -65,7 +41,7 @@ def new_entry_form(plane):
                             <div class="invalid-tooltip">Please enter the flight time.</div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-center">
                         <label for="formDistance-""" + plane + """">Distance</label>
                         <div class="input-group input-group-sm">
@@ -76,7 +52,7 @@ def new_entry_form(plane):
                             <div class="invalid-tooltip">Please enter the distance flown.</div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group text-center">
                         <label for="formEnergy-""" + plane + """">Energy</label>
                         <div class="input-group input-group-sm">
@@ -132,7 +108,8 @@ def show():
     for number, plane in enumerate(plane_list):
         tab_header = "<a class=\"nav-item nav-link "
         tab_header += "active\"" if not number else "\""
-        tab_header += " id=\"nav-" + plane + "-tab\" data-toggle=\"tab\" href=\"#nav-" + plane + "\" role=\"tab\" aria-controls=\"nav-"
+        tab_header += (" id=\"nav-" + plane + "-tab\" data-toggle=\"tab\" href=\"#nav-"
+                       + plane + "\" role=\"tab\" aria-controls=\"nav-")
         tab_header += plane + "\" aria-selected=\""
         tab_header += "true" if not number else "false"
         tab_header += "\">" + plane + "</a>\n\t\t\t\t\t<!-- Plane tab header marker -->"

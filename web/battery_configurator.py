@@ -31,18 +31,20 @@ def initialize_db():
     c.execute('''CREATE TABLE IF NOT EXISTS Cells ( name text,
                                                     voltage real,
                                                     energy real,
-                                                    capacity real, 
+                                                    capacity real,
                                                     max_current real,
                                                     weight real,
                                                     price text,
                                                     datasheet blob,
                                                     cell_id INTEGER PRIMARY KEY)''')
 
-    c.execute('''CREATE TABLE IF NOT EXISTS Batteries ( name text,
-                                                        s integer,
-                                                        p integer,
-                                                        add_weight real,
-                                                        cells INTEGER REFERENCES Cells(cell_id) ON UPDATE CASCADE ON DELETE CASCADE)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS Batteries (
+                name text,
+                s integer,
+                p integer,
+                add_weight real,
+                cells INTEGER REFERENCES Cells(cell_id) ON UPDATE CASCADE ON DELETE CASCADE)''')
+
     # Save (commit) the changes
     conn.commit()
     conn.close()
@@ -145,7 +147,12 @@ def edit_battery(request):
         status = "alreadyExisting"
 
     else:
-        battery = (request.form['Name'], request.form['S'], request.form['P'], request.form['AddWeight'], cell_id, request.form['InitialName'])
+        battery = (request.form['Name'],
+                   request.form['S'],
+                   request.form['P'],
+                   request.form['AddWeight'],
+                   cell_id,
+                   request.form['InitialName'])
 
         c.execute('''UPDATE Batteries SET name = ?, s = ?, p = ?, add_weight = ?, cells = ? WHERE name = ?''', battery)
         status = "successUpdated"

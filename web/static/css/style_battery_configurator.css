@@ -17,11 +17,6 @@
     along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-.card-header > button {
-    margin-right: 0.25rem;
-    float:right;
-}*/
 
 .card-body {
     font-weight: 350;
@@ -34,6 +29,14 @@
     float:right;
 }
 
-.card:hover > .card-header > .hover-only {
+.card:hover > .card-header > * > .hover-only {
     visibility: visible !important;
+}
+
+.manage-group {
+    float: right;
+}
+
+.modal-body {
+    word-break: break-word !important;
 }
