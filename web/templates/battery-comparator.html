@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+RC-Calc: An all-in-one R/C & FPV flying stuff calculator
+Copyright (C) 2020 Grégoire CAHUZAC <gregoire.cahuzac@outlook.fr>
+This file is part of RC-Calc. <https://github.com/Gregczc/RC-Calc>
+
+RC-Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or any later version.
+
+RC-Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>RC-Calc</title>
+
+    <link rel="manifest" href="/static/json/manifest.json">
+
+    <!-- Not sure if mandatory or if manifest.json is mis-configured -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/rc-calc-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/rc-calc-32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/static/icons/rc-calc-48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/static/icons/rc-calc-96.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="/static/icons/rc-calc-144.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icons/rc-calc-192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/static/icons/rc-calc-256.png">
+    <link rel="icon" type="image/png" sizes="384x384" href="/static/icons/rc-calc-384.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/rc-calc-512.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style_main.css">
+    <link rel="stylesheet" href="/static/css/style_battery_comparator.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="/static/fontawesome-free/js/all.js"></script>
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <div data-include="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <!-- Navbar  -->
+            <div data-include="navbar"></div>
+
+            <div id="alertAjaxError" class="alert alert-danger fade show" role="alert" style="display:none;">
+                <strong>Error!</strong> The server did not respond properly, please check the console for more information.
+                <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <h2>Battery comparator</h2>
+
+            <p>This page allows to compare battery packs built in the <a href="/battery-configurator/">battery configurator page</a>.</p>
+
+            <div class="line"></div>
+
+            <div id="card-container" class="row row-eq-height">
+				<div class="col-sm-4 p-3">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <select class="form-control form-control-sm" id="selectBattery1" onchange="update_battery(this)">
+                                <option>Please choose a battery</option>
+                            </select>                            
+                        </div>
+                        <div class="card-body">
+                            <div class="row"><div class="col">Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Energy:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Weight:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Price:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Energy per Weight:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Energy per Price:</div><div class="col">Waiting...</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 p-3">
+                    <div id="card_results" class="card h-100">
+                        <div class="card-header">
+                            <div class="form-control-sm">Results</div>                            
+                        </div>
+                        <div class="card-body">
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 p-3">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <select class="form-control form-control-sm" id="selectBattery2" onchange="update_battery(this)">
+                                <option>Please choose a battery</option>
+                            </select>                              
+                        </div>
+                        <div class="card-body">
+                            <div class="row"><div class="col">Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Energy:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Weight:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Price:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Energy per Weight:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Energy per Price:</div><div class="col">Waiting...</div></div>
+                        </div>
+                    </div>
+                </div>
+                
+			
+            </div>
+
+        </div>
+    </div>
+
+    <!-- jQuery  -->
+    <script src="/static/js/jquery-3.4.1.js"></script>
+
+    <!-- Translation script -->
+    <script src="/static/js/translation.js"></script>
+
+    <!-- Include script -->
+    <script src="/static/js/include.js"></script>
+
+    <!-- Popper and Bootstrap script bundle -->
+    <script src="/static/js/bootstrap.bundle.js"></script>
+
+    <script type="application/javascript">
+        
+        var list_cells;
+		var list_batteries;
+		var cellName2Values = new Object();
+        var batteryName2Values = new Object();
+        var select1 = document.getElementById('selectBattery1');
+        var select2 = document.getElementById('selectBattery2');
+        var card_update_body = document.getElementById('card_results').children[1];
+
+        // Bootstrap's default behaviour is to delete the alert
+		function dismiss_alert(button) {
+			$(button.parentNode).hide();
+        }
+        
+        function ajax_error() {
+            $('#alertAjaxError').fadeIn();
+        }
+		
+        function get_specs(selector) {
+            let battery = batteryName2Values[selector.value];
+            let cell = cellName2Values[battery.Cells];
+
+            let calculated_voltage = cell['Voltage'] * battery['S'];
+            let calculated_energy = cell['Energy'] * battery['S'] * battery['P'];
+            let calculated_maxcurrent = cell['Max Current'] * battery['P'];
+            let calculated_weight = cell['Weight'] * battery['S'] * battery['P'] + battery['AddWeight'];
+            let calculated_price = cell['Price'] * battery['S'] * battery['P'];
+
+            return {
+                    Voltage:            calculated_voltage.toFixed(2),
+                    Energy:             calculated_energy.toFixed(2),
+                    MaxCurrent:         calculated_maxcurrent.toFixed(2),
+                    Weight:             calculated_weight.toFixed(0),
+                    Price:              calculated_price.toFixed(2),
+                    EnergyPerWeight:    (calculated_energy / calculated_weight).toFixed(2),
+                    EnergyPerPrice:     (calculated_energy / calculated_price).toFixed(2)
+            }
+
+        }
+
+        function update_battery(selector) {
+            let card_body = selector.parentNode.parentNode.children[1];
+
+            let fields;
+
+            if (selector.value == "Please choose a battery") {
+                fields = {
+                    Voltage: "Waiting...",
+                    Energy: "Waiting...",
+                    MaxCurrent: "Waiting...",
+                    Weight: "Waiting...",
+                    Price: "Waiting...",
+                    EnergyPerWeight: "Waiting...",
+                    EnergyPerPrice: "Waiting..."
+                }
+            }
+
+            else {
+                let battery = batteryName2Values[selector.value];
+                let cell = cellName2Values[battery.Cells];
+                fields = get_specs(selector);
+                fields.Voltage += "V";
+                fields.Energy += "Wh";      
+                fields.MaxCurrent += "A";
+                fields.Weight += "g",
+                fields.Price += cell["Currency"],
+                fields.EnergyPerWeight += "Wh/g",
+                fields.EnergyPerPrice += "Wh/" + cell["Currency"]
+                
+            }
+
+            card_body.innerHTML = `<div class="row"><div class="col">Voltage:</div>             <div class="col">${fields.Voltage}</div></div>
+                                   <div class="row"><div class="col">Energy:</div>              <div class="col">${fields.Energy}</div></div>
+                                   <div class="row"><div class="col">Max Current:</div>         <div class="col">${fields.MaxCurrent}</div></div>
+                                   <div class="row"><div class="col">Weight:</div>              <div class="col">${fields.Weight}</div></div>
+                                   <div class="row"><div class="col">Price:</div>               <div class="col">${fields.Price}</div></div>
+                                   <div class="row"><div class="col">Energy per Weight:</div>   <div class="col">${fields.EnergyPerWeight}</div></div>
+                                   <div class="row"><div class="col">Energy per Price:</div>    <div class="col">${fields.EnergyPerPrice}</div></div>`;
+
+            if(select1.value != "Please choose a battery"
+            && select2.value != "Please choose a battery") {
+                update_comparaison();
+            }
+
+            else {
+                card_update_body.innerHTML = `<div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>`;
+            }
+        }
+
+
+        function update_comparaison() {
+            let specs1 = get_specs(select1);
+            let specs2 = get_specs(select2);
+            
+            let card_update_content = "";
+            
+            let results = [];
+
+            for(let key in specs1) {
+                let color = (key=="Price" || key=="Weight") ? "danger" : "success";
+
+                if(parseFloat(specs1[key])>parseFloat(specs2[key])) {
+                    results.push([(specs1[key]-specs2[key])/specs2[key]*100, 'left', color]);
+                }
+
+                else {
+                    results.push([(specs2[key]-specs1[key])/specs1[key]*100, 'right', color]);
+                }
+            }
+
+            let max_result = Math.max(...results.map(element => element[0]))
+            let min_result = Math.min(...results.map(element => (element[0]!=0) ? element[0] : max_result))
+            
+            let map_length = x => (x - min_result) * (50 - 12) / (max_result - min_result) + 12; 
+            
+            for(let i = 0; i < results.length; i++) {
+                if (results[i] == 0) {
+                    card_update_content += `<div class="col">Same</div>\n`;
+                }
+                
+                else {
+                    let scale = (results[i][1]=="left") ? "" : "scaleX(-100%)";
+                    card_update_content += `<div class="p-1">
+                                                <div class="progress" style="background-color: transparent; transform:${scale} translateX(${50-map_length(results[i][0])}%);">
+                                                    <div class="progress-bar bg-${results[i][2]}" role="progressbar" style="width:${map_length(results[i][0])}%; transform: ${scale};">${results[i][0].toFixed(1)}%</div>
+                                                </div>
+                                            </div>`;
+                }
+            }
+
+            card_update_body.innerHTML = card_update_content;
+        }
+
+		function ajax_success(response) {
+            list_cells = response['cells'];
+			list_batteries = response['batteries'];
+
+            for(let i = 0; i < list_cells.length; i++) {
+				cellName2Values[list_cells[i]['Name']] = list_cells[i];
+			}
+			
+			for(let i = 0; i < list_batteries.length; i++) {
+				batteryName2Values[list_batteries[i]['Name']] = list_batteries[i];
+                select1.appendChild(new Option(list_batteries[i]['Name'], list_batteries[i]['Name']));
+                select2.appendChild(new Option(list_batteries[i]['Name'], list_batteries[i]['Name']));
+            }
+        }
+        
+        $(document).ready(function() {		
+			$.ajax({
+				type:       	"GET",
+				url:        	'/battery-comparator/',
+				data :      	'Type=get_cells_and_batteries',
+				success:    	ajax_success,
+				error:      	ajax_error,
+				dataType:   	'json'
+			});
+		});
+    </script>
+
+</body>
+
+</html>

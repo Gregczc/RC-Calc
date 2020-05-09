@@ -34,7 +34,8 @@ def initialize_db():
                                                     capacity real,
                                                     max_current real,
                                                     weight real,
-                                                    price text,
+                                                    price real,
+                                                    currency text,
                                                     datasheet blob,
                                                     cell_id INTEGER PRIMARY KEY)''')
     # Save (commit) the changes
@@ -64,7 +65,8 @@ def get_cells(status='ok'):
             'Max Current': cell[4],
             'Weight': cell[5],
             'Price': cell[6],
-            'Data-sheet': False if cell[7] == b"0" else True
+            'Currency': cell[7],
+            'Data-sheet': False if cell[8] == b"0" else True
         })
 
     conn.commit()
@@ -112,7 +114,7 @@ def add_cell(request):
         blob = sqlite3.Binary(b"0")
 
     cell = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
-            request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
+            request.form['Max Current'], request.form['Weight'], request.form['Price'], request.form['Currency'],
             blob.tobytes(), None)
 
     conn = sqlite3.connect('db/user.db')
@@ -126,7 +128,7 @@ def add_cell(request):
 
     else:
         # Insert a row of data
-        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", cell)
+        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", cell)
 
         # Save (commit) the changes
         conn.commit()
@@ -192,11 +194,11 @@ def edit_cell(request):
 
     else:
         update = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
-                  request.form['Max Current'], request.form['Weight'], request.form['Price'] + request.form['Currency'],
+                  request.form['Max Current'], request.form['Weight'], request.form['Price'], request.form['Currency'],
                   request.form['InitialName'])
 
         c.execute('''UPDATE Cells SET name = ?, voltage = ?, energy = ?, capacity = ?, max_current = ?, weight = ?,
-                price = ? WHERE name = ?''', update)
+                price = ?, currency = ? WHERE name = ?''', update)
         status = "datasheet" if datasheet_error else "successUpdated"
         conn.commit()
 

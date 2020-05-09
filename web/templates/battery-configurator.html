@@ -287,11 +287,22 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 					break;
             }
 			
-			cellName2Values
-			
-			add_units(list_cells);
-			
-			$('#table-cells').bootstrapTable("load", list_cells);
+			let list_cells_units = [];
+			for(let i = 0; i < list_cells.length; i++) {
+				list_cells_units.push(
+					{
+						Name: list_cells[i]["Name"],
+						Voltage: list_cells[i]["Voltage"] + "V",
+						Energy: list_cells[i]["Voltage"] + "Wh",
+						Capacity: list_cells[i]["Capacity"] + "Ah",
+						"Max Current": list_cells[i]["Max Current"] + "A",
+						Weight: list_cells[i]["Weight"] + "g",
+						Price: list_cells[i]["Price"] + list_cells[i]["Currency"],
+					}
+				);
+			}
+			 
+			$('#table-cells').bootstrapTable("load", list_cells_units);
 			
 			cellName2Values = new Object();
 			batteryName2Values = new Object();
@@ -316,24 +327,10 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 			generate_add_card();
 									
 		}
-		
-		
-		function add_units(cells) {
-						
-			for (let i = 0; i < cells.length; i++) {
-				cells[i]["Voltage"] += "V";
-				cells[i]["Energy"] += "Wh";
-				cells[i]["Capacity"] += "Ah";
-				cells[i]["Max Current"] += "A";
-				cells[i]["Weight"] += "g";
-			}
-			
-            return cells;
-        }
-		
+				
 		function setSelectedCell(row, element, field) {
-			selected_cell = row;
-			document.getElementById("formCells").value = row['Name'];
+			selected_cell = row["Name"];
+			document.getElementById("formCells").value = selected_cell;
 			$('#modalCellSelection').modal('hide');
 			update_card();
 		}
@@ -389,13 +386,13 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 		}
 		
 		function generate_batterie_specs(battery, cell) {
-			
-			return `<div class="row"><div class="col">Voltage:</div>    <div class="col">${(cell['Voltage'].slice(0, -1) * battery['S']).toFixed(2)}V</div></div>
-					<div class="row"><div class="col">Energy:</div>     <div class="col">${(cell['Energy'].slice(0, -2) * battery['S'] * battery['P']).toFixed(2)}Wh</div></div>
-                    <div class="row"><div class="col">Capacity:</div>   <div class="col">${(cell['Capacity'].slice(0, -2) * battery['P']).toFixed(3)}Ah</div></div>
-                    <div class="row"><div class="col">Max Current:</div><div class="col">${(cell['Max Current'].slice(0, -1) * battery['P']).toFixed(0)}A</div></div>
-                    <div class="row"><div class="col">Weight:</div>     <div class="col">${(cell['Weight'].slice(0, -1) * battery['S'] * battery['P'] + battery['AddWeight']).toFixed(0)}g</div></div>
-                    <div class="row"><div class="col">Price:</div>      <div class="col">${(cell['Price'].slice(0, -1) * battery['S'] * battery['P']).toFixed(2) + cell['Price'].slice(-1)}</div></div>`;
+			debugger;
+			return `<div class="row"><div class="col">Voltage:</div>    <div class="col">${(cell['Voltage'] * battery['S']).toFixed(2)}V</div></div>
+					<div class="row"><div class="col">Energy:</div>     <div class="col">${(cell['Energy'] * battery['S'] * battery['P']).toFixed(2)}Wh</div></div>
+                    <div class="row"><div class="col">Capacity:</div>   <div class="col">${(cell['Capacity'] * battery['P']).toFixed(3)}Ah</div></div>
+                    <div class="row"><div class="col">Max Current:</div><div class="col">${(cell['Max Current'] * battery['P']).toFixed(0)}A</div></div>
+                    <div class="row"><div class="col">Weight:</div>     <div class="col">${(cell['Weight'] * battery['S'] * battery['P'] + battery['AddWeight']).toFixed(0)}g</div></div>
+                    <div class="row"><div class="col">Price:</div>      <div class="col">${(cell['Price'] * battery['S'] * battery['P']).toFixed(2) + cell['Currency']}</div></div>`;
 		}
 		
 		function update_card() {
@@ -406,7 +403,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 			
 			let battery = {'S': parseInt(document.getElementById("formS").value), 'P' : parseInt(document.getElementById("formP").value), 'AddWeight': parseInt(document.getElementById("formAddWeight").value)};
 			
-			initial_card_element.children[0].children[0].children[1].children[0].children[1].innerHTML = generate_batterie_specs(battery, selected_cell);
+			initial_card_element.children[0].children[0].children[1].children[0].children[1].innerHTML = generate_batterie_specs(battery, cellName2Values[selected_cell]);
 		}
 		
 		// When the "edit" button is clicked
@@ -504,12 +501,12 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 										
 									</li>
 									<li class="list-group-item">
-										<div class="row"><div class="col">Voltage:</div>    <div id="calculatedVoltage"     class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Energy:</div>     <div id="calculatedEnergy"      class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Capacity:</div>   <div id="calculatedCapacity"    class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Max Current:</div><div id="calculatedMaxCurrent"  class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Weight:</div>     <div id="calculatedWeight"      class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Price:</div>      <div id="calculatedPrice"       class="col">Waiting...</div></div>
+										<div class="row"><div class="col">Voltage:</div>    <div class="col">Waiting...</div></div>
+										<div class="row"><div class="col">Energy:</div>     <div class="col">Waiting...</div></div>
+										<div class="row"><div class="col">Capacity:</div>   <div class="col">Waiting...</div></div>
+										<div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
+										<div class="row"><div class="col">Weight:</div>     <div class="col">Waiting...</div></div>
+										<div class="row"><div class="col">Price:</div>      <div class="col">Waiting...</div></div>
 									</li>
 								</ul>
 							</div>

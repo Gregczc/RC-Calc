@@ -722,9 +722,12 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
                 json_cells[key] = add_units(json_cells[key]);
 
+                json_cells[key]["Price"] = json_cells[key]["Price"] + json_cells[key]["Currency"];
+
                 if(json_cells[key]["Data-sheet"]===true) {
                     json_cells[key]["Data-sheet"] = `<button type="button" class="btn btn-secondary btn-sm" onclick="get_datasheet(this)"><i class="fas fa-file-alt"></i></button>`;
                 }
+                
                 else {
                     json_cells[key]["Data-sheet"] = "";
                 }

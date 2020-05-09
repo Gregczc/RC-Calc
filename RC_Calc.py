@@ -20,6 +20,7 @@
 
 import webbrowser
 from flask import Flask
+from web.battery_comparator import battery_comparator
 from web.battery_configurator import battery_configurator
 from web.cell_inventory import cell_inventory
 from web.current_sensor import current_sensor
@@ -31,6 +32,7 @@ from web.motor import motor
 
 app = Flask(__name__, static_folder="web/static", template_folder="web/templates", static_url_path='/static/')
 
+app.register_blueprint(battery_comparator, url_prefix='/battery-comparator')
 app.register_blueprint(battery_configurator, url_prefix='/battery-configurator')
 app.register_blueprint(cell_inventory, url_prefix='/cell-inventory')
 app.register_blueprint(current_sensor, url_prefix='/current-sensor')

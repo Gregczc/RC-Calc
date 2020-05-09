@@ -89,102 +89,12 @@ def get_cells_and_batteries(status='ok'):
     return json.dumps({'cells': cells, 'batteries': batteries, 'Status': status})
 
 
-def add_battery(request):
-
-    conn = sqlite3.connect('db/user.db')
-    c = conn.cursor()
-    c.execute("PRAGMA foreign_keys = ON;")
-
-    cell_id = c.execute("SELECT cell_id FROM Cells WHERE name = ?", (request.form['Cells'],)).fetchall()[0][0]
-
-    battery = (request.form['Name'], request.form['S'], request.form['P'], request.form['AddWeight'], cell_id)
-
-    c.execute("SELECT COUNT(*) FROM Batteries WHERE name = ?", (request.form['Name'],))
-    if c.fetchall()[0][0] != 0:
-        status = "alreadyExisting"
-
-    else:
-        c.execute("INSERT INTO Batteries VALUES (?, ?, ?, ?, ?)", battery)
-        status = "successAdded"
-
-    # Save (commit) the changes
-    conn.commit()
-    conn.close()
-
-    return get_cells_and_batteries(status)
+battery_comparator = Blueprint('battery-comparator', __name__)
 
 
-def delete_battery(name):
-
-    conn = sqlite3.connect('db/user.db')
-    c = conn.cursor()
-    c.execute("PRAGMA foreign_keys = ON;")
-
-    c.execute("DELETE FROM Batteries WHERE name = ?", (name,))
-
-    c.execute("SELECT COUNT(*) FROM Batteries WHERE name = ?", (name,))
-    if c.fetchall()[0][0] != 0:
-        status = "errorDeleted"
-    else:
-        status = "successDeleted"
-
-    conn.commit()
-    conn.close()
-
-    return get_cells_and_batteries(status)
-
-
-def edit_battery(request):
-
-    conn = sqlite3.connect('db/user.db')
-    c = conn.cursor()
-    c.execute("PRAGMA foreign_keys = ON;")
-
-    cell_id = c.execute("SELECT cell_id FROM Cells WHERE name = ?", (request.form['Cells'],)).fetchall()[0][0]
-
-    new_battery = c.execute("SELECT * FROM Batteries WHERE name = ?", (request.form['Name'],)).fetchall()
-    initial_battery = c.execute("SELECT * FROM Batteries WHERE name = ?", (request.form['InitialName'],)).fetchall()
-
-    if len(new_battery) != 0 and new_battery != initial_battery:
-        status = "alreadyExisting"
-
-    else:
-        battery = (request.form['Name'],
-                   request.form['S'],
-                   request.form['P'],
-                   request.form['AddWeight'],
-                   cell_id,
-                   request.form['InitialName'])
-
-        c.execute('''UPDATE Batteries SET name = ?, s = ?, p = ?, add_weight = ?, cells = ? WHERE name = ?''', battery)
-        status = "successUpdated"
-        conn.commit()
-
-    conn.close()
-
-    return get_cells_and_batteries(status)
-
-
-battery_configurator = Blueprint('battery-configurator', __name__)
-
-
-@battery_configurator.route('/', methods=['GET', 'POST'])
+@battery_comparator.route('/')
 def show():
     if request.method == 'GET' and request.args.get('Type') == 'get_cells_and_batteries':
         return get_cells_and_batteries()
-
-    elif request.method == 'POST' and 'Type' in request.form:
-        if request.form['Type'] == 'add':
-            return add_battery(request)
-
-        elif request.form['Type'] == 'edit':
-            return edit_battery(request)
-
-        elif request.form['Type'] == 'delete':
-            return delete_battery(request.form['Name'])
-
-        else:
-            return render_template('battery-configurator.html')
-
     else:
-        return render_template('battery-configurator.html')
+        return render_template('battery-comparator.html')
