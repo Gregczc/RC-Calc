@@ -12,12 +12,13 @@ Le programme se présente actuellement sous la forme d'un serveur web auto-hébe
 
 Pour l'instant, RC-Calc vous permet de :
 - Régler le nombre de mV/A de la sonde de tension pour avoir une mesure précise de la consommation d'énergie/courant. Pratique pour des vols long-range en toute sereinité !
-- Configurer vos batteries : choisissez vos cellules, le nombre d'éléments en série et en parallèle et obtenez les caractéristiques de la batterie telles que la tension, le courant max, son énergie et autres. Utile pour se lancer dans la création de pack li-ion maison !
+- Configurer vos batteries : choisissez vos cellules, le nombre d'éléments en série et en parallèle et obtenez les caractéristiques de la batterie telles que la tension, le courant max, son énergie et autres. Une fois configurées, un comparateur permet de trouver quel pack correspond au mieux à l'utilisation. Utile pour se lancer dans la création de pack li-ion maison !
 
 ## Quelles fonctionnalités sont à prévoir ?
+
 D'autres outils doivent encore être inclus dans ce programme et donneront les fonctionnalités suivantes :
-- Un comparateur de batteries, pour mieux observer les différences de performances entre deux packs et faire le bon choix de cellules.
 - Un carnet de vol, pour suivre ses temps et distance de vol et pouvoir déterminer rapidement si un nouvel équipement comme un changement de batterie, d'hélice ou autre a un impact sur les performances habituelles.
+- Une traductoin complète en français : la traduction, bien que proposée, n'est qu'en partie fonctionnelle.
 
 J'ai également d'autres outils en réserve mais ne suis pas sûr s'ils devraient être inclus, car ils sont très spéciques et ont donné des résultats limités pour l'instant. Par exemple : un calculateur de centre de gravité pour ailes volantes.
 

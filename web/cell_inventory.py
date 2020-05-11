@@ -29,7 +29,9 @@ def initialize_db():
     c = conn.cursor()
     c.execute("PRAGMA foreign_keys = ON;")
     c.execute('''CREATE TABLE IF NOT EXISTS Cells ( name text,
-                                                    voltage real,
+                                                    voltage_min real,
+                                                    voltage_nom real,
+                                                    voltage_max real,
                                                     energy real,
                                                     capacity real,
                                                     max_current real,
@@ -55,26 +57,28 @@ def get_cells(status='ok'):
     c = conn.cursor()
     c.execute("PRAGMA foreign_keys = ON;")
 
-    json_cells = []
+    cells = []
     for cell in c.execute("SELECT * FROM Cells"):
-        json_cells.append({
-            'Name': cell[0],
-            'Voltage': cell[1],
-            'Energy': cell[2],
-            'Capacity': cell[3],
-            'Max Current': cell[4],
-            'Weight': cell[5],
-            'Price': cell[6],
-            'Currency': cell[7],
-            'Data-sheet': False if cell[8] == b"0" else True
+        cells.append({
+            'Name':         cell[0],
+            'Voltage Min':  cell[1],
+            'Voltage Nom':  cell[2],
+            'Voltage Max':  cell[3],
+            'Energy':       cell[4],
+            'Capacity':     cell[5],
+            'Max Current':  cell[6],
+            'Weight':       cell[7],
+            'Price':        cell[8],
+            'Currency':     cell[9],
+            'Data-sheet':   False if cell[10] == b"0" else True
         })
 
     conn.commit()
     conn.close()
 
-    json_cells.append({'Status': status})
+    cells.append({'Status': status})
 
-    return json.dumps(json_cells)
+    return json.dumps(cells)
 
 
 def get_datasheet(name):
@@ -113,9 +117,9 @@ def add_cell(request):
     else:
         blob = sqlite3.Binary(b"0")
 
-    cell = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
-            request.form['Max Current'], request.form['Weight'], request.form['Price'], request.form['Currency'],
-            blob.tobytes(), None)
+    cell = (request.form['Name'], request.form['Voltage Min'], request.form['Voltage Nom'], request.form['Voltage Max'],
+            request.form['Energy'], request.form['Capacity'], request.form['Max Current'], request.form['Weight'],
+            request.form['Price'], request.form['Currency'], blob.tobytes(), None)
 
     conn = sqlite3.connect('db/user.db')
     c = conn.cursor()
@@ -128,7 +132,7 @@ def add_cell(request):
 
     else:
         # Insert a row of data
-        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", cell)
+        c.execute("INSERT INTO Cells VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", cell)
 
         # Save (commit) the changes
         conn.commit()
@@ -193,12 +197,14 @@ def edit_cell(request):
         status = "alreadyExisting"
 
     else:
-        update = (request.form['Name'], request.form['Voltage'], request.form['Energy'], request.form['Capacity'],
+        update = (request.form['Name'], request.form['Voltage Min'], request.form['Voltage Nom'],
+                  request.form['Voltage Max'], request.form['Energy'], request.form['Capacity'],
                   request.form['Max Current'], request.form['Weight'], request.form['Price'], request.form['Currency'],
                   request.form['InitialName'])
 
-        c.execute('''UPDATE Cells SET name = ?, voltage = ?, energy = ?, capacity = ?, max_current = ?, weight = ?,
-                price = ?, currency = ? WHERE name = ?''', update)
+        c.execute('''UPDATE Cells SET name = ?, voltage_min = ?, voltage_nom = ?, voltage_max = ?, energy = ?,
+                  capacity = ?, max_current = ?, weight = ?, price = ?, currency = ? WHERE name = ?''', update)
+        
         status = "datasheet" if datasheet_error else "successUpdated"
         conn.commit()
 

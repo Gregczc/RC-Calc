@@ -72,49 +72,12 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
 
             <h2>Flight Time Logbook</h2>
-            <p class="text-justify">This tool uses a simple multiplication in order to determine the maximum range and
-                flight time that would have been reachable if the battery was fully used. You will need to provide the
-                flight time and energy usage from real flight in addition the max battery capacity. <br>
-                This result it self is not the point. What's interesting is to log as many flight as possible for a
-                given configuration. So whenever a change is made on a plane (propeller, motor, winglets etc.) you can
-                compare the new performance to the old one in order to get an idea about the gain or loss in efficiency of the
-                new setup.</p>
+            <p class="text-justify">This page will be used to log flights and calculate theoretical max flight time and range, so they could be graphed in another page.
+                This will allow the user to see if a specific equipement change had a significant impact on usual performance.</p>
 
             <div class="line"></div>
 
             <div id="placeholderAlertForm"></div>
-
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <!-- Plane tab header marker -->
-                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-add" role="tab" aria-controls="nav-add" aria-selected="false">
-                        <i class="fas fa-plus"></i>
-                    </a>
-                </div>
-            </nav>
-
-            <div class="tab-content" id="nav-tabContent">
-                <!-- Plane tab content marker -->
-                <div class="tab-pane fade" id="nav-add" role="tabpanel" aria-labelledby="nav-contact-tab">
-                    <div class="card">
-                        <div class="card-header text-center">Add a new plane</div>
-                        <div class="card-body">
-                            <form class="form-inline" method="POST" action="" novalidate>
-                                <label class="mx-2" for="formNewAircraft-Name">Aircraft Name:</label>
-                                <div class="input-group mx-2">
-                                    <input type="text" class="form-control" id="formNewAircraft-Name" placeholder="eg. S800, mini-Skyhunter" name="formNewAircraft-Name">
-                                    <div class="invalid-tooltip">Please enter the aircraft name.</div>
-                                </div>
-                                <button type="submit" class="btn btn-primary mx-2" id="formNewAircraft-Save" name="formNewAircraft-Save" value="clicked">Save</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
 
         </div>
     </div>

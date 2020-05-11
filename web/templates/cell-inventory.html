@@ -252,11 +252,25 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
 
                         <div class="form-group row">
-                            <label for="inputVoltage" class="col-sm-3 col-form-label">Voltage</label>
+                            <label for="inputVoltage" class="col-sm-3 col-form-label">Voltages </label>
                             <div class="col-sm-9 input-group">
-                                <input type="number" step="0.1" min="0.1" class="form-control" id="inputVoltage" placeholder="3.6" required name="Voltage">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">V</span>
+                                <div class="col input-group p-0">
+                                    <input type="number" step="0.1" min="0.1" class="form-control" id="inputVoltageMin" placeholder="Min" required name="Voltage Min">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">V</span>
+                                    </div>
+                                </div>
+                                <div class="col input-group">
+                                    <input type="number" step="0.1" min="0.1" class="form-control" id="inputVoltageNom" placeholder="Nom" required name="Voltage Nom">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">V</span>
+                                    </div>
+                                </div>
+                                <div class="col input-group p-0">
+                                    <input type="number" step="0.1" min="0.1" class="form-control" id="inputVoltageMax" placeholder="Max" required name="Voltage Max">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">V</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -361,7 +375,9 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
         // To remember the initial state
         var initial_name        = "";
-        var initial_voltage     = "";
+        var initial_voltage_min = "";
+        var initial_voltage_nom = "";
+        var initial_voltage_max = "";
         var initial_energy      = "";
         var initial_capacity    = "";
         var initial_max_current = "";
@@ -501,7 +517,9 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 			formData.append('Type', 'edit');
 			formData.append('InitialName', initial_name);
 			formData.append('Name', document.getElementById("editName").value);
-			formData.append('Voltage', document.getElementById("editVoltage").value)
+            formData.append('Voltage Min', document.getElementById("editVoltageMin").value)
+            formData.append('Voltage Nom', document.getElementById("editVoltageNom").value)
+            formData.append('Voltage Max', document.getElementById("editVoltageMax").value)
 			formData.append('Energy', document.getElementById("editEnergy").value)
 			formData.append('Capacity', document.getElementById("editCapacity").value)
 			formData.append('Max Current', document.getElementById("editMaxCurrent").value)
@@ -576,14 +594,16 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             let row = button_clicked.parentNode.parentNode;
 
             initial_name        = $(row).children()[0].innerHTML;
-            initial_voltage     = $(row).children()[1].innerHTML;
-            initial_energy      = $(row).children()[2].innerHTML;
-            initial_capacity    = $(row).children()[3].innerHTML;
-            initial_max_current = $(row).children()[4].innerHTML;
-            initial_weight      = $(row).children()[5].innerHTML;
-            initial_price       = $(row).children()[6].innerHTML;
-            initial_datasheet   = $(row).children()[7].innerHTML;
-            initial_manage      = $(row).children()[8].innerHTML;
+            initial_voltage_min = $(row).children()[1].innerHTML;
+            initial_voltage_nom = $(row).children()[2].innerHTML;
+            initial_voltage_max = $(row).children()[3].innerHTML;
+            initial_energy      = $(row).children()[4].innerHTML;
+            initial_capacity    = $(row).children()[5].innerHTML;
+            initial_max_current = $(row).children()[6].innerHTML;
+            initial_weight      = $(row).children()[7].innerHTML;
+            initial_price       = $(row).children()[8].innerHTML;
+            initial_datasheet   = $(row).children()[9].innerHTML;
+            initial_manage      = $(row).children()[10].innerHTML;
 
             is_editing = true;
 			update_datasheet = "none";
@@ -593,13 +613,27 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
             $(row).children()[1].innerHTML = `
                 <div class="input-group input-group-sm">
-                    <input type="number" step="0.1" min="0.1" id="editVoltage" class="form-control no-spin" value="${initial_voltage.slice(0, -1)}" required>
+                    <input type="number" step="0.1" min="0.1" id="editVoltageMin" class="form-control no-spin" value="${initial_voltage_min.slice(0, -1)}" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">V</span>
+                    </div>
+                </div>`;
+            $(row).children()[2].innerHTML = `
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="0.1" id="editVoltageNom" class="form-control no-spin" value="${initial_voltage_nom.slice(0, -1)}" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">V</span>
+                    </div>
+                </div>`;
+            $(row).children()[3].innerHTML = `
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.1" min="0.1" id="editVoltageMax" class="form-control no-spin" value="${initial_voltage_max.slice(0, -1)}" required>
                     <div class="input-group-append">
                         <span class="input-group-text">V</span>
                     </div>
                 </div>`;
 
-            $(row).children()[2].innerHTML = `
+            $(row).children()[4].innerHTML = `
                 <div class="input-group input-group-sm">
                     <input type="number" step="0.01" min="0.01" id="editEnergy" class="form-control no-spin" value="${initial_energy.slice(0, -2)}" required>
                     <div class="input-group-append">
@@ -607,7 +641,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>`;
 
-            $(row).children()[3].innerHTML = `
+            $(row).children()[5].innerHTML = `
                 <div class="input-group input-group-sm">
                     <input type="number" step="0.1" min="0.1" id="editCapacity" class="form-control no-spin" value="${initial_capacity.slice(0, -2)}" required>
                     <div class="input-group-append">
@@ -615,7 +649,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>`;
 
-            $(row).children()[4].innerHTML = `
+            $(row).children()[6].innerHTML = `
                 <div class="input-group input-group-sm">
                     <input type="number" step="0.1" min="1" id="editMaxCurrent" class="form-control no-spin" value="${initial_max_current.slice(0, -1)}" required>
                     <div class="input-group-append">
@@ -623,7 +657,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>`;
 
-            $(row).children()[5].innerHTML = `
+            $(row).children()[7].innerHTML = `
                 <div class="input-group input-group-sm">
                     <input type="number" step="0.1" min="1" id="editWeight" class="form-control no-spin" value="${initial_weight.slice(0, -1)}" required>
                     <div class="input-group-append">
@@ -631,7 +665,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>`;
 
-            $(row).children()[6].innerHTML = `
+            $(row).children()[8].innerHTML = `
                 <div class="input-group input-group-sm">
                     <input type="number" step="0.01" min="0.01" id="editPrice" class="form-control no-spin" value="${initial_price.slice(0, -1)}" required>
                     <select class="form-control form-control-sm" id="editCurrency" value="£">
@@ -643,15 +677,15 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				
 			document.getElementById('editCurrency').value = initial_price.slice(-1, initial_price.length);
 			
-			if ($(row).children()[7].innerHTML == '') {
-				$(row).children()[7].innerHTML = `<button type="button" id="editAdd" class="btn btn-outline-primary btn-sm" onclick="$('#modalChooseDatasheet').modal('show');"><i class="fas fa-plus"></i></button>`
+			if ($(row).children()[9].innerHTML == '') {
+				$(row).children()[9].innerHTML = `<button type="button" id="editAdd" class="btn btn-outline-primary btn-sm" onclick="$('#modalChooseDatasheet').modal('show');"><i class="fas fa-plus"></i></button>`
 			}
 			else {
-				$(row).children()[7].innerHTML = `<button type="button" id="editDelete" class="btn btn-outline-danger btn-sm" onclick="$('#modalConfirmDatasheetDelete').modal('show');"><i class="fas fa-trash-alt"></i></button>
+				$(row).children()[9].innerHTML = `<button type="button" id="editDelete" class="btn btn-outline-danger btn-sm" onclick="$('#modalConfirmDatasheetDelete').modal('show');"><i class="fas fa-trash-alt"></i></button>
 				<button type="button" id="editAdd" class="btn btn-outline-primary btn-sm" onclick="$('#modalChooseDatasheet').modal('show');"><i class="fas fa-exchange-alt"></i></button>`
 			}
 			
-			 $(row).children()[8].innerHTML = `<button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this)"><i class="fas fa-ban"></i></button>
+			 $(row).children()[10].innerHTML = `<button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this)"><i class="fas fa-ban"></i></button>
                                               <button type="submit" class="btn btn-outline-success btn-sm"><i class="fas fa-check"></i></button>`;
         }
 		
@@ -663,21 +697,25 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             let row = button_clicked.parentNode.parentNode;
 
             $(row).children()[0].innerHTML = initial_name;
-            $(row).children()[1].innerHTML = initial_voltage;
-            $(row).children()[2].innerHTML = initial_energy;
-            $(row).children()[3].innerHTML = initial_capacity;
-            $(row).children()[4].innerHTML = initial_max_current;
-            $(row).children()[5].innerHTML = initial_weight;
-            $(row).children()[6].innerHTML = initial_price;
-            $(row).children()[7].innerHTML = initial_datasheet;
-            $(row).children()[8].innerHTML = initial_manage;
+            $(row).children()[1].innerHTML = initial_voltage_min;
+            $(row).children()[2].innerHTML = initial_voltage_nom;
+            $(row).children()[3].innerHTML = initial_voltage_max;
+            $(row).children()[4].innerHTML = initial_energy;
+            $(row).children()[5].innerHTML = initial_capacity;
+            $(row).children()[6].innerHTML = initial_max_current;
+            $(row).children()[7].innerHTML = initial_weight;
+            $(row).children()[8].innerHTML = initial_price;
+            $(row).children()[9].innerHTML = initial_datasheet;
+            $(row).children()[10].innerHTML = initial_manage;
 
             is_editing = false;
         }
 
 
         function add_units(row) {
-            row["Voltage"] += "V";
+            row["Voltage Min"] += "V";
+            row["Voltage Nom"] += "V";
+            row["Voltage Max"] += "V";
             row["Energy"] += "Wh";
             row["Capacity"] += "Ah";
             row["Max Current"] += "A";
@@ -753,50 +791,67 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				sortOrder: "asc",
 				fixedColumns: true,
                 fixedNumber: 1,
-				columns: [{
+				columns: [[{
 						field: 'Name',
 						title: 'Name',
+                        rowspan: 2,
 						sortable: true
 					}, {
-						field: 'Voltage',
 						title: 'Voltage',
-						sortable: true,
-						width: 8,
-						widthUnit: "rem"
+                        colspan: 3,
 					}, {
 						field: 'Energy',
 						title: 'Energy',
+                        rowspan: 2,
 						sortable: true
 					}, {
 						field: 'Capacity',
 						title: 'Capacity',
+                        rowspan: 2,
 						sortable: true
 					}, {
 						field: 'Max Current',
 						title: 'Max Current',
 						sortable: true,
 						width: 8,
+                        rowspan: 2,
 						widthUnit: "rem"
 					}, {
 						field: 'Weight',
 						title: 'Weight',
+                        rowspan: 2,
 						sortable: true
 					}, {
 						field: 'Price',
 						title: 'Price',
+                        rowspan: 2,
 						sortable: true
 					}, {
 						field: 'Data-sheet',
 						title: 'Data-sheet',
 						sortable: true,
+                        rowspan: 2,
 						width: 6,
 						widthUnit: 'rem'
 					}, {
 						field: 'Manage',
 						title: 'Manage',
+                        rowspan: 2,
 						width: 6,
 						widthUnit: 'rem'
-					}]
+					}],[{
+						field: 'Voltage Min',
+						title: 'Min',
+						sortable: true,
+					}, {
+						field: 'Voltage Nom',
+						title: 'Nom',
+						sortable: true
+					}, {
+						field: 'Voltage Max',
+						title: 'Max',
+						sortable: true
+					}]]
 			});
 			
 			$.ajax({

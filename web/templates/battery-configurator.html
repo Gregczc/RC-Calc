@@ -292,8 +292,8 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 				list_cells_units.push(
 					{
 						Name: list_cells[i]["Name"],
-						Voltage: list_cells[i]["Voltage"] + "V",
-						Energy: list_cells[i]["Voltage"] + "Wh",
+						"Voltage Nom": list_cells[i]["Voltage Nom"] + "V",
+						Energy: list_cells[i]["Energy"] + "Wh",
 						Capacity: list_cells[i]["Capacity"] + "Ah",
 						"Max Current": list_cells[i]["Max Current"] + "A",
 						Weight: list_cells[i]["Weight"] + "g",
@@ -387,7 +387,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 		
 		function generate_batterie_specs(battery, cell) {
 			debugger;
-			return `<div class="row"><div class="col">Voltage:</div>    <div class="col">${(cell['Voltage'] * battery['S']).toFixed(2)}V</div></div>
+			return `<div class="row"><div class="col">Voltage:</div>    <div class="col">${(cell['Voltage Nom'] * battery['S']).toFixed(2)}V</div></div>
 					<div class="row"><div class="col">Energy:</div>     <div class="col">${(cell['Energy'] * battery['S'] * battery['P']).toFixed(2)}Wh</div></div>
                     <div class="row"><div class="col">Capacity:</div>   <div class="col">${(cell['Capacity'] * battery['P']).toFixed(3)}Ah</div></div>
                     <div class="row"><div class="col">Max Current:</div><div class="col">${(cell['Max Current'] * battery['P']).toFixed(0)}A</div></div>
@@ -594,7 +594,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 						title: 'Name',
 						sortable: true
 					}, {
-						field: 'Voltage',
+						field: 'Voltage Nom',
 						title: 'Voltage',
 						sortable: true,
 						halign: 'center',

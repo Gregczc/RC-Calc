@@ -29,7 +29,9 @@ def initialize_db():
     c.execute("PRAGMA foreign_keys = ON;")
 
     c.execute('''CREATE TABLE IF NOT EXISTS Cells ( name text,
-                                                    voltage real,
+                                                    voltage_min real,
+                                                    voltage_nom real,
+                                                    voltage_max real,
                                                     energy real,
                                                     capacity real,
                                                     max_current real,
@@ -61,15 +63,17 @@ def get_cells_and_batteries(status='ok'):
     cells = []
     for cell in c.execute("SELECT * FROM Cells"):
         cells.append({
-            'Name': cell[0],
-            'Voltage': cell[1],
-            'Energy': cell[2],
-            'Capacity': cell[3],
-            'Max Current': cell[4],
-            'Weight': cell[5],
-            'Price': cell[6],
-            'Currency': cell[7],
-            'Data-sheet': False if cell[8] == b"0" else True
+            'Name':         cell[0],
+            'Voltage Min':  cell[1],
+            'Voltage Nom':  cell[2],
+            'Voltage Max':  cell[3],
+            'Energy':       cell[4],
+            'Capacity':     cell[5],
+            'Max Current':  cell[6],
+            'Weight':       cell[7],
+            'Price':        cell[8],
+            'Currency':     cell[9],
+            'Data-sheet':   False if cell[10] == b"0" else True
         })
 
     cellID2Name = dict(c.execute("SELECT cell_id, name FROM Cells").fetchall())

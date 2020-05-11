@@ -86,9 +86,14 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                             </select>                            
                         </div>
                         <div class="card-body">
-                            <div class="row"><div class="col">Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Maximal Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Nominal Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Minimal Voltage:</div><div class="col">Waiting...</div></div>                            
                             <div class="row"><div class="col">Energy:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Power at VMax:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Power at VNom:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Power at VMin:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Weight:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Price:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Energy per Weight:</div><div class="col">Waiting...</div></div>
@@ -110,6 +115,11 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                             <div>Waiting...</div>
                             <div>Waiting...</div>
                             <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
+                            <div>Waiting...</div>
                         </div>
                     </div>
                 </div>
@@ -122,9 +132,14 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                             </select>                              
                         </div>
                         <div class="card-body">
-                            <div class="row"><div class="col">Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Maximal Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Nominal Voltage:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Minimal Voltage:</div><div class="col">Waiting...</div></div>                            
                             <div class="row"><div class="col">Energy:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Power at VMax:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Power at VNom:</div><div class="col">Waiting...</div></div>
+                            <div class="row"><div class="col">Max Power at VMin:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Weight:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Price:</div><div class="col">Waiting...</div></div>
                             <div class="row"><div class="col">Energy per Weight:</div><div class="col">Waiting...</div></div>
@@ -174,16 +189,26 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             let battery = batteryName2Values[selector.value];
             let cell = cellName2Values[battery.Cells];
 
-            let calculated_voltage = cell['Voltage'] * battery['S'];
+            let calculated_voltagemax = cell['Voltage Max'] * battery['S'];
+            let calculated_voltagenom = cell['Voltage Nom'] * battery['S'];
+            let calculated_voltagemin = cell['Voltage Min'] * battery['S'];
             let calculated_energy = cell['Energy'] * battery['S'] * battery['P'];
             let calculated_maxcurrent = cell['Max Current'] * battery['P'];
+            let calculated_maxpowermax = cell['Max Current'] * battery['P'] * cell['Voltage Max'] * battery['S'];
+            let calculated_maxpowernom = cell['Max Current'] * battery['P'] * cell['Voltage Nom'] * battery['S'];
+            let calculated_maxpowermin = cell['Max Current'] * battery['P'] * cell['Voltage Min'] * battery['S'];
             let calculated_weight = cell['Weight'] * battery['S'] * battery['P'] + battery['AddWeight'];
             let calculated_price = cell['Price'] * battery['S'] * battery['P'];
 
             return {
-                    Voltage:            calculated_voltage.toFixed(2),
+                    VoltageMax:         calculated_voltagemax.toFixed(2),
+                    VoltageNom:         calculated_voltagenom.toFixed(2),
+                    VoltageMin:         calculated_voltagemin.toFixed(2),
                     Energy:             calculated_energy.toFixed(2),
                     MaxCurrent:         calculated_maxcurrent.toFixed(2),
+                    MaxPowerMax:        calculated_maxpowermax.toFixed(0),
+                    MaxPowerNom:        calculated_maxpowernom.toFixed(0),
+                    MaxPowerMin:        calculated_maxpowermin.toFixed(0),
                     Weight:             calculated_weight.toFixed(0),
                     Price:              calculated_price.toFixed(2),
                     EnergyPerWeight:    (calculated_energy / calculated_weight).toFixed(2),
@@ -199,13 +224,18 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
             if (selector.value == "Please choose a battery") {
                 fields = {
-                    Voltage: "Waiting...",
-                    Energy: "Waiting...",
-                    MaxCurrent: "Waiting...",
-                    Weight: "Waiting...",
-                    Price: "Waiting...",
-                    EnergyPerWeight: "Waiting...",
-                    EnergyPerPrice: "Waiting..."
+                    VoltageMax:         "Waiting...",
+                    VoltageNom:         "Waiting...",
+                    VoltageMin:         "Waiting...",
+                    Energy:             "Waiting...",
+                    MaxCurrent:         "Waiting...",
+                    MaxPowerMax:        "Waiting...",
+                    MaxPowerNom:        "Waiting...",
+                    MaxPowerMin:        "Waiting...",
+                    Weight:             "Waiting...",
+                    Price:              "Waiting...",
+                    EnergyPerWeight:    "Waiting...",
+                    EnergyPerPrice:     "Waiting..."
                 }
             }
 
@@ -213,9 +243,14 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                 let battery = batteryName2Values[selector.value];
                 let cell = cellName2Values[battery.Cells];
                 fields = get_specs(selector);
-                fields.Voltage += "V";
+                fields.VoltageMax += "V";
+                fields.VoltageNom += "V";
+                fields.VoltageMin += "V";
                 fields.Energy += "Wh";      
                 fields.MaxCurrent += "A";
+                fields.MaxPowerMax += "W";
+                fields.MaxPowerNom += "W";
+                fields.MaxPowerMin += "W";
                 fields.Weight += "g",
                 fields.Price += cell["Currency"],
                 fields.EnergyPerWeight += "Wh/g",
@@ -223,9 +258,14 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                 
             }
 
-            card_body.innerHTML = `<div class="row"><div class="col">Voltage:</div>             <div class="col">${fields.Voltage}</div></div>
+            card_body.innerHTML = `<div class="row"><div class="col">Maximal Voltage:</div>     <div class="col">${fields.VoltageMax}</div></div>
+                                   <div class="row"><div class="col">Nominal Voltage:</div>     <div class="col">${fields.VoltageNom}</div></div>
+                                   <div class="row"><div class="col">Minimal Voltage:</div>     <div class="col">${fields.VoltageMin}</div></div>
                                    <div class="row"><div class="col">Energy:</div>              <div class="col">${fields.Energy}</div></div>
                                    <div class="row"><div class="col">Max Current:</div>         <div class="col">${fields.MaxCurrent}</div></div>
+                                   <div class="row"><div class="col">Max Power at VMax:</div>   <div class="col">${fields.MaxPowerMax}</div></div>
+                                   <div class="row"><div class="col">Max Power at VNom:</div>   <div class="col">${fields.MaxPowerNom}</div></div>
+                                   <div class="row"><div class="col">Max Power at VMin:</div>   <div class="col">${fields.MaxPowerMin}</div></div>
                                    <div class="row"><div class="col">Weight:</div>              <div class="col">${fields.Weight}</div></div>
                                    <div class="row"><div class="col">Price:</div>               <div class="col">${fields.Price}</div></div>
                                    <div class="row"><div class="col">Energy per Weight:</div>   <div class="col">${fields.EnergyPerWeight}</div></div>
@@ -238,6 +278,11 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
             else {
                 card_update_body.innerHTML = `<div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
+                                              <div class="col">Waiting...</div>
                                               <div class="col">Waiting...</div>
                                               <div class="col">Waiting...</div>
                                               <div class="col">Waiting...</div>
@@ -274,7 +319,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             let map_length = x => (x - min_result) * (50 - 12) / (max_result - min_result) + 12; 
             
             for(let i = 0; i < results.length; i++) {
-                if (results[i] == 0) {
+                if (results[i][0] == 0) {
                     card_update_content += `<div class="col">Same</div>\n`;
                 }
                 

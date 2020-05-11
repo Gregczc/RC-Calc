@@ -139,8 +139,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
     <script type="text/javascript">
         function textChange(event) {
-
-            if(event.target.value && event.target.value > 0) {
+            if (event.target.value && event.target.value > 0) {
                 document.getElementById(event.target.id).classList.remove('is-invalid');
                 document.getElementById(event.target.id).classList.add('is-valid');
             }
@@ -150,16 +149,16 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                 document.getElementById(event.target.id).classList.add('is-invalid');
             }
 
-            var osdmAh = document.getElementById("formOSDmAh").value;
-            var trustedmAh = document.getElementById("formTrustedmAh").value;
-            var oldmVA = document.getElementById("formOldmVA").value;
+            var osdmAh = document.getElementById('formOSDmAh').value;
+            var trustedmAh = document.getElementById('formTrustedmAh').value;
+            var oldmVA = document.getElementById('formOldmVA').value;
 
             if (osdmAh && osdmAh > 0 && trustedmAh && trustedmAh > 0 && oldmVA && oldmVA > 0) {
-                document.getElementById("formNewmVA").value = Math.round(osdmAh / trustedmAh * oldmVA);
+                document.getElementById('formNewmVA').value = Math.round(osdmAh / trustedmAh * oldmVA);
             }
 
             else {
-                document.getElementById("formNewmVA").value = getString("formNewmVA");
+                document.getElementById('formNewmVA').value = "Waiting for input";
             }
         }
 
