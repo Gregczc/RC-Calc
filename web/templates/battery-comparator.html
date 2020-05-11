@@ -78,7 +78,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             <div class="line"></div>
 
             <div id="card-container" class="row row-eq-height">
-				<div class="col-sm-4 p-3">
+                <div class="col-sm-4 p-3">
                     <div class="card h-100">
                         <div class="card-header">
                             <select class="form-control form-control-sm" id="selectBattery1" onchange="update_battery(this)">
@@ -148,7 +148,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     </div>
                 </div>
                 
-			
+            
             </div>
 
         </div>
@@ -169,22 +169,22 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
     <script type="application/javascript">
         
         var list_cells;
-		var list_batteries;
-		var cellName2Values = new Object();
+        var list_batteries;
+        var cellName2Values = new Object();
         var batteryName2Values = new Object();
         var select1 = document.getElementById('selectBattery1');
         var select2 = document.getElementById('selectBattery2');
         var card_update_body = document.getElementById('card_results').children[1];
 
         // Bootstrap's default behaviour is to delete the alert
-		function dismiss_alert(button) {
-			$(button.parentNode).hide();
+        function dismiss_alert(button) {
+            $(button.parentNode).hide();
         }
         
         function ajax_error() {
             $('#alertAjaxError').fadeIn();
         }
-		
+        
         function get_specs(selector) {
             let battery = batteryName2Values[selector.value];
             let cell = cellName2Values[battery.Cells];
@@ -336,31 +336,31 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             card_update_body.innerHTML = card_update_content;
         }
 
-		function ajax_success(response) {
+        function ajax_success(response) {
             list_cells = response['cells'];
-			list_batteries = response['batteries'];
+            list_batteries = response['batteries'];
 
             for(let i = 0; i < list_cells.length; i++) {
-				cellName2Values[list_cells[i]['Name']] = list_cells[i];
-			}
-			
-			for(let i = 0; i < list_batteries.length; i++) {
-				batteryName2Values[list_batteries[i]['Name']] = list_batteries[i];
+                cellName2Values[list_cells[i]['Name']] = list_cells[i];
+            }
+            
+            for(let i = 0; i < list_batteries.length; i++) {
+                batteryName2Values[list_batteries[i]['Name']] = list_batteries[i];
                 select1.appendChild(new Option(list_batteries[i]['Name'], list_batteries[i]['Name']));
                 select2.appendChild(new Option(list_batteries[i]['Name'], list_batteries[i]['Name']));
             }
         }
         
-        $(document).ready(function() {		
-			$.ajax({
-				type:       	"GET",
-				url:        	'/battery-comparator/',
-				data :      	'Type=get_cells_and_batteries',
-				success:    	ajax_success,
-				error:      	ajax_error,
-				dataType:   	'json'
-			});
-		});
+        $(document).ready(function() {        
+            $.ajax({
+                type:           "GET",
+                url:            '/battery-comparator/',
+                data :          'Type=get_cells_and_batteries',
+                success:        ajax_success,
+                error:          ajax_error,
+                dataType:       'json'
+            });
+        });
     </script>
 
 </body>

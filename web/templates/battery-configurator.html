@@ -48,8 +48,8 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/static/css/bootstrap.css">
-	
-	<!-- Bootstrap Table CSS -->
+    
+    <!-- Bootstrap Table CSS -->
     <link rel="stylesheet" href="/static/bootstrap-table/bootstrap-table.css">
     <link rel="stylesheet" href="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.css">
 
@@ -81,43 +81,43 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div id="alertAlreadyExisting" class="alert alert-danger fade show" role="alert" style="display:none;">
+            
+            <div id="alertAlreadyExisting" class="alert alert-danger fade show" role="alert" style="display:none;">
                 <strong>Error!</strong> A battery is already existing with the same name.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div id="alertSuccessAdded" class="alert alert-success fade show collapse" role="alert" style="display:none;">
+            
+            <div id="alertSuccessAdded" class="alert alert-success fade show collapse" role="alert" style="display:none;">
                 <strong>Success!</strong> The battery was correctly added.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div id="alertSuccessDeleted" class="alert alert-success fade show collapse" role="alert" style="display:none;">
+            
+            <div id="alertSuccessDeleted" class="alert alert-success fade show collapse" role="alert" style="display:none;">
                 <strong>Success!</strong> The battery was correctly deleted.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div id="alertErrorDeleted" class="alert alert-danger fade show collapse" role="alert" style="display:none;">
+            
+            <div id="alertErrorDeleted" class="alert alert-danger fade show collapse" role="alert" style="display:none;">
                 <strong>Error!</strong> The battery could not be deleted. Please check the console for more infos.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div id="alertSuccessUpdated" class="alert alert-success fade show collapse" role="alert" style="display:none;">
+            
+            <div id="alertSuccessUpdated" class="alert alert-success fade show collapse" role="alert" style="display:none;">
                 <strong>Success!</strong> The battery was correctly updated.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div id="alertErrorUpdated" class="alert alert-danger fade show collapse" role="alert" style="display:none;">
+            
+            <div id="alertErrorUpdated" class="alert alert-danger fade show collapse" role="alert" style="display:none;">
                 <strong>Error!</strong> The battery could not be updated. Please check the console for more infos.
                 <button type="button" class="close" aria-label="Close" onclick="dismiss_alert(this)">
                     <span aria-hidden="true">&times;</span>
@@ -125,13 +125,13 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <h2>Battery Configurator</h2>
-			<p>This page allows to build packs from the cells stored in the <a href="/cell-inventory/">cell inventory page</a>.</p>
+            <p>This page allows to build packs from the cells stored in the <a href="/cell-inventory/">cell inventory page</a>.</p>
 
             <div class="line"></div>
-			
-			
+            
+            
             <div id="card-container" class="row row-eq-height">
-				
+                
 
             </div>
 
@@ -159,8 +159,8 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
     </div>
-	
-	<!-- Modal confirm Delete-->
+    
+    <!-- Modal confirm Delete-->
     <div class="modal fade" id="modalConfirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -180,8 +180,8 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
     </div>
-	
-	<!-- Modal Cell Selection-->
+    
+    <!-- Modal Cell Selection-->
     <div class="modal fade" id="modalCellSelection" tabindex="-1" role="dialog" aria-labelledby="CellSelectionTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -200,7 +200,7 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
             </div>
         </div>
     </div>
-	
+    
     <!-- jQuery  -->
     <script src="/static/js/jquery-3.4.1.js"></script>
 
@@ -212,57 +212,57 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
 
     <!-- Popper and Bootstrap script bundle -->
     <script src="/static/js/bootstrap.bundle.js"></script>
-	
-	<!-- Bootstrap Table -->
+    
+    <!-- Bootstrap Table -->
     <script src="/static/bootstrap-table/bootstrap-table.js"></script>
     <script src="/static/bootstrap-table/extensions/sticky-header/bootstrap-table-sticky-header.js"></script>
-	
-	<script type="application/javascript">
-	    
-		// So the user does not change several lines at the same time
+    
+    <script type="application/javascript">
+        
+        // So the user does not change several lines at the same time
         var is_editing = false;
-		var delete_confirmed = false;
-		
-		var selected_cell = "";
-		var initial_card_element;
-		var initial_card_content;
-		
-		var list_cells;
-		var list_batteries;
-		var cellName2Values = new Object();
-		var batteryName2Values = new Object();
-		
-		// Bootstrap's default behaviour is to delete the alert
-		function dismiss_alert(button) {
-			$(button.parentNode).hide();
-		}
-		
-		function hide_all_alerts() {
-			$('#alertSuccessAdded').hide();
+        var delete_confirmed = false;
+        
+        var selected_cell = "";
+        var initial_card_element;
+        var initial_card_content;
+        
+        var list_cells;
+        var list_batteries;
+        var cellName2Values = new Object();
+        var batteryName2Values = new Object();
+        
+        // Bootstrap's default behaviour is to delete the alert
+        function dismiss_alert(button) {
+            $(button.parentNode).hide();
+        }
+        
+        function hide_all_alerts() {
+            $('#alertSuccessAdded').hide();
             $('#alertAlreadyExisting').hide();
-			$('#alertSuccessDeleted').hide();
-			$('#alertErrorDeleted').hide();
-			$('#alertSuccessUpdated').hide();
-			$('#alertErrorUpdated').hide();
-		}
-		
-		function ajax_error() {
+            $('#alertSuccessDeleted').hide();
+            $('#alertErrorDeleted').hide();
+            $('#alertSuccessUpdated').hide();
+            $('#alertErrorUpdated').hide();
+        }
+        
+        function ajax_error() {
             $('#alertAjaxError').fadeIn();
         }
-		
-		function ajax_success(response) {
-			
-			is_editing = false;
-			delete_confirmed = false;
-			
-			selected_cell = "";
-			initial_card_element = null;
-			initial_card_content = null;
-			
-			list_cells = response['cells'];
-			list_batteries = response['batteries'];
-			
-			let status = response['Status'];
+        
+        function ajax_success(response) {
+            
+            is_editing = false;
+            delete_confirmed = false;
+            
+            selected_cell = "";
+            initial_card_element = null;
+            initial_card_content = null;
+            
+            list_cells = response['cells'];
+            list_batteries = response['batteries'];
+            
+            let status = response['Status'];
 
             switch (status) {
                 case 'successAdded':
@@ -271,380 +271,380 @@ along with RC-Calc.  If not, see <http://www.gnu.org/licenses/>.
                 case 'alreadyExisting':
                     $('#alertAlreadyExisting').show();
                     break;
-				case 'successDeleted':
+                case 'successDeleted':
                     $('#alertSuccessDeleted').show();
                     break;
-				case 'errorDeleted':
+                case 'errorDeleted':
                     $('#alertErrorDeleted').show();
                     break;
-				case 'successUpdated':
+                case 'successUpdated':
                     $('#alertSuccessUpdated').show();
                     break;
-				case 'errorUpdated':
+                case 'errorUpdated':
                     $('#alertErrorUpdated').show();
                     break;
-				default:
-					break;
+                default:
+                    break;
             }
-			
-			let list_cells_units = [];
-			for(let i = 0; i < list_cells.length; i++) {
-				list_cells_units.push(
-					{
-						Name: list_cells[i]["Name"],
-						"Voltage Nom": list_cells[i]["Voltage Nom"] + "V",
-						Energy: list_cells[i]["Energy"] + "Wh",
-						Capacity: list_cells[i]["Capacity"] + "Ah",
-						"Max Current": list_cells[i]["Max Current"] + "A",
-						Weight: list_cells[i]["Weight"] + "g",
-						Price: list_cells[i]["Price"] + list_cells[i]["Currency"],
-					}
-				);
-			}
-			 
-			$('#table-cells').bootstrapTable("load", list_cells_units);
-			
-			cellName2Values = new Object();
-			batteryName2Values = new Object();
-			
-			let card_container = document.getElementById('card-container');
-			while (card_container.firstChild) {
-				card_container.removeChild(card_container.firstChild);
-			}
-			
-			for(let i = 0; i < list_cells.length; i++) {
-				cellName2Values[list_cells[i]['Name']] = list_cells[i];
-			}
-			
-			for(let i = 0; i < list_batteries.length; i++) {
-				batteryName2Values[list_batteries[i]['Name']] = list_batteries[i];
-			}
-						
-			for(let i = 0; i < list_batteries.length; i++){
-				generate_card(list_batteries[i], cellName2Values[list_batteries[i]['Cells']]);	
-			}
-			
-			generate_add_card();
-									
-		}
-				
-		function setSelectedCell(row, element, field) {
-			selected_cell = row["Name"];
-			document.getElementById("formCells").value = selected_cell;
-			$('#modalCellSelection').modal('hide');
-			update_card();
-		}
-			
-		function generate_card(battery, cell) {
-			let card_container = document.getElementById('card-container');
-			let new_card= document.createElement("div");
-			new_card.className = "col-sm-4 p-3";
-			new_card.innerHTML = `<div class="card h-100">
-									<div class="card-header">
-										${battery['Name']}
-										<span class="manage-group">
-											<button type="button" class="btn btn-outline-primary btn-sm hover-only" onclick="edit_card(this);"><i class="fas fa-edit"></i></button>
-											<button type="button" class="btn btn-outline-danger btn-sm hover-only" onclick="delete_card(this);"><i class="fas fa-trash-alt"></i></button>
-										</span>
-									</div>
-									<div class="card-body">
-										<ul class="list-group list-group-flush">
-											<li class="list-group-item">
-												<div class="row"><div class="col">Cells:</div>				<div class="col">${cell['Name']}</div></div>
-												<div class="row"><div class="col">Configuration:</div>      <div class="col">${battery['S']}S ${battery['P']}P</div></div>
-												<div class="row"><div class="col">Additional Weight:</div>  <div class="col">${battery['AddWeight']}g</div></div>
-											</li>
-											<li class="list-group-item">
-												${generate_batterie_specs(battery, cell)}
-											</li>
-										</ul>
-									</div>
-								</div>`
-								
-			card_container.appendChild(new_card);
-		}
-		
-		function generate_add_card() {
-			let card_container = document.getElementById('card-container');
-			let new_card= document.createElement("div");
-			new_card.className = "col-sm-4 p-3";
-			new_card.id = "addCard";
-			new_card.innerHTML = `<div class="card h-100">
-									<div class="card-header">
-										New battery
-									</div>
-									<div class="card-body">
-										<div class="h-100"><!-- Dummy element-->
-											<button id="addButton" type="button" class="btn btn-outline-primary btn-block h-100" onclick="edit_card(this)">
-												<i class="fas fa-plus"></i><span class="p-3">Add a battery</span>
-											</button>
-										</div>
-									</div>
-								</div>`
-								
-			card_container.appendChild(new_card);
-		}
-		
-		function generate_batterie_specs(battery, cell) {
-			debugger;
-			return `<div class="row"><div class="col">Voltage:</div>    <div class="col">${(cell['Voltage Nom'] * battery['S']).toFixed(2)}V</div></div>
-					<div class="row"><div class="col">Energy:</div>     <div class="col">${(cell['Energy'] * battery['S'] * battery['P']).toFixed(2)}Wh</div></div>
+            
+            let list_cells_units = [];
+            for(let i = 0; i < list_cells.length; i++) {
+                list_cells_units.push(
+                    {
+                        Name: list_cells[i]["Name"],
+                        "Voltage Nom": list_cells[i]["Voltage Nom"] + "V",
+                        Energy: list_cells[i]["Energy"] + "Wh",
+                        Capacity: list_cells[i]["Capacity"] + "Ah",
+                        "Max Current": list_cells[i]["Max Current"] + "A",
+                        Weight: list_cells[i]["Weight"] + "g",
+                        Price: list_cells[i]["Price"] + list_cells[i]["Currency"],
+                    }
+                );
+            }
+             
+            $('#table-cells').bootstrapTable("load", list_cells_units);
+            
+            cellName2Values = new Object();
+            batteryName2Values = new Object();
+            
+            let card_container = document.getElementById('card-container');
+            while (card_container.firstChild) {
+                card_container.removeChild(card_container.firstChild);
+            }
+            
+            for(let i = 0; i < list_cells.length; i++) {
+                cellName2Values[list_cells[i]['Name']] = list_cells[i];
+            }
+            
+            for(let i = 0; i < list_batteries.length; i++) {
+                batteryName2Values[list_batteries[i]['Name']] = list_batteries[i];
+            }
+                        
+            for(let i = 0; i < list_batteries.length; i++){
+                generate_card(list_batteries[i], cellName2Values[list_batteries[i]['Cells']]);    
+            }
+            
+            generate_add_card();
+                                    
+        }
+                
+        function setSelectedCell(row, element, field) {
+            selected_cell = row["Name"];
+            document.getElementById("formCells").value = selected_cell;
+            $('#modalCellSelection').modal('hide');
+            update_card();
+        }
+            
+        function generate_card(battery, cell) {
+            let card_container = document.getElementById('card-container');
+            let new_card= document.createElement("div");
+            new_card.className = "col-sm-4 p-3";
+            new_card.innerHTML = `<div class="card h-100">
+                                    <div class="card-header">
+                                        ${battery['Name']}
+                                        <span class="manage-group">
+                                            <button type="button" class="btn btn-outline-primary btn-sm hover-only" onclick="edit_card(this);"><i class="fas fa-edit"></i></button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm hover-only" onclick="delete_card(this);"><i class="fas fa-trash-alt"></i></button>
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">
+                                                <div class="row"><div class="col">Cells:</div>                <div class="col">${cell['Name']}</div></div>
+                                                <div class="row"><div class="col">Configuration:</div>      <div class="col">${battery['S']}S ${battery['P']}P</div></div>
+                                                <div class="row"><div class="col">Additional Weight:</div>  <div class="col">${battery['AddWeight']}g</div></div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                ${generate_batterie_specs(battery, cell)}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>`
+                                
+            card_container.appendChild(new_card);
+        }
+        
+        function generate_add_card() {
+            let card_container = document.getElementById('card-container');
+            let new_card= document.createElement("div");
+            new_card.className = "col-sm-4 p-3";
+            new_card.id = "addCard";
+            new_card.innerHTML = `<div class="card h-100">
+                                    <div class="card-header">
+                                        New battery
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="h-100"><!-- Dummy element-->
+                                            <button id="addButton" type="button" class="btn btn-outline-primary btn-block h-100" onclick="edit_card(this)">
+                                                <i class="fas fa-plus"></i><span class="p-3">Add a battery</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>`
+                                
+            card_container.appendChild(new_card);
+        }
+        
+        function generate_batterie_specs(battery, cell) {
+            debugger;
+            return `<div class="row"><div class="col">Voltage:</div>    <div class="col">${(cell['Voltage Nom'] * battery['S']).toFixed(2)}V</div></div>
+                    <div class="row"><div class="col">Energy:</div>     <div class="col">${(cell['Energy'] * battery['S'] * battery['P']).toFixed(2)}Wh</div></div>
                     <div class="row"><div class="col">Capacity:</div>   <div class="col">${(cell['Capacity'] * battery['P']).toFixed(3)}Ah</div></div>
                     <div class="row"><div class="col">Max Current:</div><div class="col">${(cell['Max Current'] * battery['P']).toFixed(0)}A</div></div>
                     <div class="row"><div class="col">Weight:</div>     <div class="col">${(cell['Weight'] * battery['S'] * battery['P'] + battery['AddWeight']).toFixed(0)}g</div></div>
                     <div class="row"><div class="col">Price:</div>      <div class="col">${(cell['Price'] * battery['S'] * battery['P']).toFixed(2) + cell['Currency']}</div></div>`;
-		}
-		
-		function update_card() {
-			
-			if (selected_cell == "") {
-				return 1;
-			}
-			
-			let battery = {'S': parseInt(document.getElementById("formS").value), 'P' : parseInt(document.getElementById("formP").value), 'AddWeight': parseInt(document.getElementById("formAddWeight").value)};
-			
-			initial_card_element.children[0].children[0].children[1].children[0].children[1].innerHTML = generate_batterie_specs(battery, cellName2Values[selected_cell]);
-		}
-		
-		// When the "edit" button is clicked
+        }
+        
+        function update_card() {
+            
+            if (selected_cell == "") {
+                return 1;
+            }
+            
+            let battery = {'S': parseInt(document.getElementById("formS").value), 'P' : parseInt(document.getElementById("formP").value), 'AddWeight': parseInt(document.getElementById("formAddWeight").value)};
+            
+            initial_card_element.children[0].children[0].children[1].children[0].children[1].innerHTML = generate_batterie_specs(battery, cellName2Values[selected_cell]);
+        }
+        
+        // When the "edit" button is clicked
         function edit_card(button_clicked) {
-			
+            
             if(is_editing) {
                 $('#modalStillEditing').modal('show');
                 return 1;
             }
-			
-			initial_card_element = button_clicked.parentNode.parentNode.parentNode.parentNode;
-			initial_card_content = initial_card_element.innerHTML;
-						
-			let new_card = (initial_card_element.id == 'addCard') ? true : false;
-			
-			let edited_battery;
+            
+            initial_card_element = button_clicked.parentNode.parentNode.parentNode.parentNode;
+            initial_card_content = initial_card_element.innerHTML;
+                        
+            let new_card = (initial_card_element.id == 'addCard') ? true : false;
+            
+            let edited_battery;
             let initial_name;
-			if (new_card) {
-				initial_name = "";
-				edited_battery = {	Name: "Enter battery name...",
-									S: 1,
-									P: 1,
-									AddWeight: 0,
-									Cells: ""};
-			}
+            if (new_card) {
+                initial_name = "";
+                edited_battery = {    Name: "Enter battery name...",
+                                    S: 1,
+                                    P: 1,
+                                    AddWeight: 0,
+                                    Cells: ""};
+            }
 
-			else {
-			    initial_name = initial_card_element.children[0].children[0].innerText;
-				edited_battery = batteryName2Values[initial_name];
-			}
+            else {
+                initial_name = initial_card_element.children[0].children[0].innerText;
+                edited_battery = batteryName2Values[initial_name];
+            }
 
-			is_editing = true;
-					
-			initial_card_element.innerHTML = `
+            is_editing = true;
+                    
+            initial_card_element.innerHTML = `
                     <div class="card h-100">
-						<form id="formAdd" method="POST">
-							<div class="card-header">
-								<div class="form-row">
-									<div class="col">
-										<input type="text" id="editName" class="form-control form-control-sm" value="${(new_card) ? "" : edited_battery['Name']}" placeholder="${(new_card) ? edited_battery['Name'] : ""}" name="Name" required>
-									</div>
-									<div class="col-auto">
-										<button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this);"><i class="fas fa-ban"></i></button>
-										<button type="submit" class="btn btn-outline-success btn-sm"><i class="fas fa-check"></i></button>
-									</div>
-								</div>
-							</div>
-							<div class="card-body">
-								<ul class="list-group list-group-flush">
-									<li class="list-group-item">
-										<div class="form-group row mb-1">
-											<label for="formCells" class="col-sm-5 col-form-label col-form-label-sm">Cells:</label>
-											<div class="col-sm-7 px-0">
-												<div class="form-row col form-group my-1 px-1">
-													<input type="text" class="form-control form-control-sm btn btn-sm btn-outline-primary" id="formCells" placeholder="Click here to choose" value="${edited_battery['Cells']}" onclick="$('#modalCellSelection').modal('show');" name="Cells" required>
-												</div>
-											</div>
-										</div>
-										<div class="form-group row mb-1">
-											<label for="formAddWeight" class="col-sm-5 col-form-label col-form-label-sm">Configuration:</label>
-											<div class="form-row col-sm-7 px-0">
-												<div class="col form-group my-1 px-1">
-													<div class="input-group input-group-sm">
-														<input type="number" step="1" min="1" class="form-control" id="formS" value="${edited_battery['S']}" onchange="update_card()" required name="S">
-														<div class="input-group-append">
-															<span class="input-group-text">S</span>
-														</div>
-													</div>
-												</div>
-												<div class="col form-group my-1 px-1">
-													<div class="input-group input-group-sm">
-														<input type="number" step="1" min="1" class="form-control" id="formP" value="${edited_battery['P']}" onchange="update_card()" required name="P">
-														<div class="input-group-append">
-															<span class="input-group-text">P</span>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div class="form-group row mb-1">
-											<label for="formAddWeight" class="col-sm-5 col-form-label col-form-label-sm">Additional Weight:</label>
-											<div class="form-row col-sm-7 px-1">
-												<div class="col form-group my-0 p-0">
-													<div class="input-group input-group-sm">
-														<input type="number" step="1" min="0" class="form-control" id="formAddWeight" value="${edited_battery['AddWeight']}" onchange="update_card()" required name="AddWeight">
-														<div class="input-group-append">
-															<span class="input-group-text">g</span>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										<input name="Type" type="hidden" value="${(new_card) ? "add" : "edit"}">
-										<input name="InitialName" type="hidden" value="${initial_name}">
-										
-									</li>
-									<li class="list-group-item">
-										<div class="row"><div class="col">Voltage:</div>    <div class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Energy:</div>     <div class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Capacity:</div>   <div class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Weight:</div>     <div class="col">Waiting...</div></div>
-										<div class="row"><div class="col">Price:</div>      <div class="col">Waiting...</div></div>
-									</li>
-								</ul>
-							</div>
-						</form>
+                        <form id="formAdd" method="POST">
+                            <div class="card-header">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input type="text" id="editName" class="form-control form-control-sm" value="${(new_card) ? "" : edited_battery['Name']}" placeholder="${(new_card) ? edited_battery['Name'] : ""}" name="Name" required>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="discard(this);"><i class="fas fa-ban"></i></button>
+                                        <button type="submit" class="btn btn-outline-success btn-sm"><i class="fas fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <div class="form-group row mb-1">
+                                            <label for="formCells" class="col-sm-5 col-form-label col-form-label-sm">Cells:</label>
+                                            <div class="col-sm-7 px-0">
+                                                <div class="form-row col form-group my-1 px-1">
+                                                    <input type="text" class="form-control form-control-sm btn btn-sm btn-outline-primary" id="formCells" placeholder="Click here to choose" value="${edited_battery['Cells']}" onclick="$('#modalCellSelection').modal('show');" name="Cells" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-1">
+                                            <label for="formAddWeight" class="col-sm-5 col-form-label col-form-label-sm">Configuration:</label>
+                                            <div class="form-row col-sm-7 px-0">
+                                                <div class="col form-group my-1 px-1">
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="number" step="1" min="1" class="form-control" id="formS" value="${edited_battery['S']}" onchange="update_card()" required name="S">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">S</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col form-group my-1 px-1">
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="number" step="1" min="1" class="form-control" id="formP" value="${edited_battery['P']}" onchange="update_card()" required name="P">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">P</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-1">
+                                            <label for="formAddWeight" class="col-sm-5 col-form-label col-form-label-sm">Additional Weight:</label>
+                                            <div class="form-row col-sm-7 px-1">
+                                                <div class="col form-group my-0 p-0">
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="number" step="1" min="0" class="form-control" id="formAddWeight" value="${edited_battery['AddWeight']}" onchange="update_card()" required name="AddWeight">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">g</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input name="Type" type="hidden" value="${(new_card) ? "add" : "edit"}">
+                                        <input name="InitialName" type="hidden" value="${initial_name}">
+                                        
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row"><div class="col">Voltage:</div>    <div class="col">Waiting...</div></div>
+                                        <div class="row"><div class="col">Energy:</div>     <div class="col">Waiting...</div></div>
+                                        <div class="row"><div class="col">Capacity:</div>   <div class="col">Waiting...</div></div>
+                                        <div class="row"><div class="col">Max Current:</div><div class="col">Waiting...</div></div>
+                                        <div class="row"><div class="col">Weight:</div>     <div class="col">Waiting...</div></div>
+                                        <div class="row"><div class="col">Price:</div>      <div class="col">Waiting...</div></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
                     </div>`
-			
+            
             $("#formAdd").submit(function(event){
 
-				event.preventDefault();
-				hide_all_alerts();
-								
-				let formData = new FormData(this);
-				
-				$('#modalAddCell').modal('hide');
-				
-				$.ajax({
-					type:       	"POST",
-					url:        	'/battery-configurator/',
-					data :      	formData,
-					processData:	false,
-					contentType: 	false,
-					success:    	ajax_success,
-					error:      	ajax_error,
-					dataType:   	'json'
-				});
-			});
-		}
-		
-		function delete_confirm() {
-			delete_confirmed = true;
-			$('#modalConfirmDelete').modal('hide');
-		}
-		
-		function delete_card(button_clicked) {
+                event.preventDefault();
+                hide_all_alerts();
+                                
+                let formData = new FormData(this);
+                
+                $('#modalAddCell').modal('hide');
+                
+                $.ajax({
+                    type:           "POST",
+                    url:            '/battery-configurator/',
+                    data :          formData,
+                    processData:    false,
+                    contentType:     false,
+                    success:        ajax_success,
+                    error:          ajax_error,
+                    dataType:       'json'
+                });
+            });
+        }
+        
+        function delete_confirm() {
+            delete_confirmed = true;
+            $('#modalConfirmDelete').modal('hide');
+        }
+        
+        function delete_card(button_clicked) {
 
             if(is_editing) {
                 $('#modalStillEditing').modal('show');
             }
 
             else {
-				hide_all_alerts();
-				
-				let card_clicked = button_clicked.parentNode.parentNode.parentNode.parentNode;
-				let battery_name = card_clicked.children[0].children[0].innerText;
-				
-				document.getElementById("batteryToDelete").innerHTML = battery_name;
-				delete_confirmed = false;
-				$('#modalConfirmDelete').modal('show');
-				$('#modalConfirmDelete').on('hidden.bs.modal', function () {
-										
-					if (delete_confirmed) {
-						$.ajax({
-							type:       	"POST",
-							url:        	'/battery-configurator/',
-							data :      	'Type=delete&Name=' + battery_name,
-							success:    	ajax_success,
-							error:      	ajax_error,
-							dataType:   	'json'
-						});
-					}
-				});
+                hide_all_alerts();
+                
+                let card_clicked = button_clicked.parentNode.parentNode.parentNode.parentNode;
+                let battery_name = card_clicked.children[0].children[0].innerText;
+                
+                document.getElementById("batteryToDelete").innerHTML = battery_name;
+                delete_confirmed = false;
+                $('#modalConfirmDelete').modal('show');
+                $('#modalConfirmDelete').on('hidden.bs.modal', function () {
+                                        
+                    if (delete_confirmed) {
+                        $.ajax({
+                            type:           "POST",
+                            url:            '/battery-configurator/',
+                            data :          'Type=delete&Name=' + battery_name,
+                            success:        ajax_success,
+                            error:          ajax_error,
+                            dataType:       'json'
+                        });
+                    }
+                });
             }
         }
-		
-		function discard(button_clicked) {
+        
+        function discard(button_clicked) {
             initial_card_element.innerHTML = initial_card_content;
             is_editing = false;
-			selected_cell = "";
-			initial_card_element = null;
-			initial_card_content = null;
+            selected_cell = "";
+            initial_card_element = null;
+            initial_card_content = null;
         }
-				
-		$(document).ready(function() {
-			
-			$('#table-cells').bootstrapTable({
-				classes: 'table table-hover',
-				stickyHeader: true,
-				sortName: "Name",
-				sortOrder: "asc",
-				fixedColumns: true,
+                
+        $(document).ready(function() {
+            
+            $('#table-cells').bootstrapTable({
+                classes: 'table table-hover',
+                stickyHeader: true,
+                sortName: "Name",
+                sortOrder: "asc",
+                fixedColumns: true,
                 fixedNumber: 2,
                 fixedRightNumber: 1,
-				columns: [{
-						field: 'Name',
-						title: 'Name',
-						sortable: true
-					}, {
-						field: 'Voltage Nom',
-						title: 'Voltage',
-						sortable: true,
-						halign: 'center',
-						align: 'center'
-					}, {
-						field: 'Energy',
-						title: 'Energy',
-						sortable: true,
-						halign: 'center',
-						align: 'center'
-					}, {
-						field: 'Capacity',
-						title: 'Capacity',
-						sortable: true,
-						halign: 'center',
-						align: 'center'
-					}, {
-						field: 'Max Current',
-						title: 'Max Current',
-						sortable: true,
-						halign: 'center',
-						align: 'center'
-					}, {
-						field: 'Weight',
-						title: 'Weight',
-						sortable: true,
-						halign: 'center',
-						align: 'center'
-					}, {
-						field: 'Price',
-						title: 'Price',
-						sortable: true,
-						halign: 'center',
-						align: 'center'
-					}],
-				onClickRow: setSelectedCell
-			});
-			
-			
-			$.ajax({
-				type:       	"GET",
-				url:        	'/battery-configurator/',
-				data :      	'Type=get_cells_and_batteries',
-				success:    	ajax_success,
-				error:      	ajax_error,
-				dataType:   	'json'
-			});
-			
-		});
-	</script>
+                columns: [{
+                        field: 'Name',
+                        title: 'Name',
+                        sortable: true
+                    }, {
+                        field: 'Voltage Nom',
+                        title: 'Voltage',
+                        sortable: true,
+                        halign: 'center',
+                        align: 'center'
+                    }, {
+                        field: 'Energy',
+                        title: 'Energy',
+                        sortable: true,
+                        halign: 'center',
+                        align: 'center'
+                    }, {
+                        field: 'Capacity',
+                        title: 'Capacity',
+                        sortable: true,
+                        halign: 'center',
+                        align: 'center'
+                    }, {
+                        field: 'Max Current',
+                        title: 'Max Current',
+                        sortable: true,
+                        halign: 'center',
+                        align: 'center'
+                    }, {
+                        field: 'Weight',
+                        title: 'Weight',
+                        sortable: true,
+                        halign: 'center',
+                        align: 'center'
+                    }, {
+                        field: 'Price',
+                        title: 'Price',
+                        sortable: true,
+                        halign: 'center',
+                        align: 'center'
+                    }],
+                onClickRow: setSelectedCell
+            });
+            
+            
+            $.ajax({
+                type:           "GET",
+                url:            '/battery-configurator/',
+                data :          'Type=get_cells_and_batteries',
+                success:        ajax_success,
+                error:          ajax_error,
+                dataType:       'json'
+            });
+            
+        });
+    </script>
 
 
 </body>

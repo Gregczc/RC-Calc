@@ -50,8 +50,8 @@ If you have some ideas of features you would like to see in this program, feel f
 
 Please keep in mind I am not a professional developer. Just doing this for fun in my spare time and using it as a learning platform to get better at coding and at using GitHub!
 
-### Library used
+### Libraries used
 
 [Bootstrap](https://getboostrap.com) : for the user interface  
-[Bootstrap-table](https://bootstrap-table.com) : for the sortable tables 
+[Bootstrap-table](https://bootstrap-table.com) : for the sortable tables  
 [Font Awesome](https://fontawesome.com) : for the icons
